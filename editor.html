@@ -1,0 +1,2702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>ONE MINUTE NEWS — Management</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    font-family:Inter,Arial,sans-serif;
+    background:#0b0d12;
+    color:#fff;
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.container{
+    width:min(100%,1000px);
+    margin:auto;
+    padding:16px;
+}
+.screen{display:none}
+.auth-wrap{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+.card{
+    background:#151922;
+    border:1px solid #292e3a;
+    border-radius:18px;
+    padding:22px;
+    box-shadow:0 15px 50px #0008;
+}
+.auth-card{width:min(100%,420px)}
+.logo{
+    text-align:center;
+    font-size:26px;
+    font-weight:900;
+    margin-bottom:5px;
+}
+.sub{
+    text-align:center;
+    color:#9da5b5;
+    margin-bottom:22px;
+}
+input,textarea,select{
+    width:100%;
+    background:#0e1118;
+    color:#fff;
+    border:1px solid #303645;
+    border-radius:11px;
+    padding:13px;
+    outline:none;
+    margin:6px 0 10px;
+}
+textarea{min-height:110px;resize:vertical}
+input:focus,textarea:focus,select:focus{
+    border-color:#7c5cff;
+}
+.btn{
+    border:0;
+    border-radius:11px;
+    padding:12px 15px;
+    font-weight:800;
+    background:#7357ff;
+    color:white;
+}
+.btn:hover{opacity:.9}
+.btn.secondary{background:#272c38}
+.btn.green{background:#168a55}
+.btn.red{background:#b93645}
+.btn.orange{background:#b56a12}
+.btn.full{width:100%}
+.small-btn{
+    padding:7px 10px;
+    border:0;
+    border-radius:8px;
+    background:#292f3c;
+    color:#fff;
+    margin:2px;
+}
+.message{
+    margin-top:10px;
+    color:#aeb6c6;
+    line-height:1.5;
+}
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:18px;
+}
+.header h1{font-size:22px;margin:0}
+.tabs{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    margin-bottom:15px;
+}
+.tab{
+    white-space:nowrap;
+    border:1px solid #303645;
+    background:#151922;
+    color:#fff;
+    padding:10px 15px;
+    border-radius:10px;
+}
+.tab.active{background:#7357ff;border-color:#7357ff}
+.panel{display:none}
+.panel.active{display:block}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-bottom:16px;
+}
+.stat{
+    background:#151922;
+    border:1px solid #292e3a;
+    border-radius:14px;
+    padding:15px;
+}
+.stat b{font-size:22px;display:block}
+.stat span{font-size:12px;color:#929aaa}
+.form-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+.full-row{grid-column:1/-1}
+.section-title{
+    font-size:18px;
+    font-weight:900;
+    margin:5px 0 15px;
+}
+.item{
+    background:#151922;
+    border:1px solid #292e3a;
+    border-radius:14px;
+    padding:13px;
+    margin-top:10px;
+}
+.item-top{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+}
+.item-title{
+    font-weight:800;
+    line-height:1.4;
+}
+.meta{
+    color:#929aaa;
+    font-size:12px;
+    margin-top:7px;
+}
+.badge{
+    display:inline-block;
+    padding:4px 8px;
+    border-radius:20px;
+    background:#292f3c;
+    font-size:11px;
+}
+.preview{
+    width:100%;
+    max-height:260px;
+    object-fit:cover;
+    border-radius:10px;
+    margin-top:8px;
+}
+.actions{
+    margin-top:10px;
+    display:flex;
+    flex-wrap:wrap;
+}
+.file-note{
+    font-size:12px;
+    color:#8e97a8;
+}
+.hide{display:none!important}
+
+@media(max-width:650px){
+    .grid{grid-template-columns:1fr 1fr}
+    .form-grid{grid-template-columns:1fr}
+    .full-row{grid-column:auto}
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+     LOGIN
+===================================================== -->
+<div id="loginScreen" class="screen">
+<div class="auth-wrap">
+<div class="card auth-card">
+
+    <div class="logo">ONE MINUTE NEWS</div>
+    <div class="sub">Management Login</div>
+
+    <form id="loginForm">
+
+        <input
+            id="loginEmail"
+            type="email"
+            placeholder="Manager email"
+            required
+        >
+
+        <input
+            id="loginPassword"
+            type="password"
+            placeholder="Password"
+            required
+        >
+
+        <button class="btn full" type="submit">
+            Login
+        </button>
+
+    </form>
+
+    <button
+        id="forgotPasswordBtn"
+        class="btn secondary full"
+        style="margin-top:10px"
+        type="button">
+        Forgot Password?
+    </button>
+
+    <div id="loginMessage" class="message"></div>
+
+</div>
+</div>
+</div>
+
+
+<!-- =====================================================
+     FORGOT PASSWORD
+===================================================== -->
+<div id="forgotScreen" class="screen">
+<div class="auth-wrap">
+<div class="card auth-card">
+
+    <div class="logo">Reset Password</div>
+    <div class="sub">
+        We'll send a secure reset link to your email.
+    </div>
+
+    <form id="forgotForm">
+
+        <input
+            id="forgotEmail"
+            type="email"
+            placeholder="Manager email"
+            required
+        >
+
+        <button class="btn full" type="submit">
+            Send Reset Link
+        </button>
+
+    </form>
+
+    <button
+        id="backToLoginBtn"
+        class="btn secondary full"
+        style="margin-top:10px"
+        type="button">
+        ← Back to Login
+    </button>
+
+    <div id="forgotMessage" class="message"></div>
+
+</div>
+</div>
+</div>
+
+
+<!-- =====================================================
+     RESET PASSWORD
+===================================================== -->
+<div id="resetScreen" class="screen">
+<div class="auth-wrap">
+<div class="card auth-card">
+
+    <div class="logo">🔐 New Password</div>
+    <div class="sub">
+        Create a new manager password.
+    </div>
+
+    <form id="resetForm">
+
+        <input
+            id="newPassword"
+            type="password"
+            minlength="6"
+            placeholder="New password"
+            required
+        >
+
+        <input
+            id="confirmPassword"
+            type="password"
+            minlength="6"
+            placeholder="Confirm new password"
+            required
+        >
+
+        <button class="btn full" type="submit">
+            Update Password
+        </button>
+
+    </form>
+
+    <div id="resetMessage" class="message"></div>
+
+</div>
+</div>
+</div>
+
+
+<!-- =====================================================
+     DASHBOARD
+===================================================== -->
+<div id="dashboardScreen" class="screen">
+<div class="container">
+
+    <div class="header">
+        <h1>ONE MINUTE NEWS</h1>
+
+        <button
+            id="logoutBtn"
+            class="btn red">
+            Logout
+        </button>
+    </div>
+
+    <div class="grid">
+
+        <div class="stat">
+            <b id="statNews">0</b>
+            <span>News</span>
+        </div>
+
+        <div class="stat">
+            <b id="statVideos">0</b>
+            <span>Videos</span>
+        </div>
+
+        <div class="stat">
+            <b id="statTrending">0</b>
+            <span>Trending</span>
+        </div>
+
+        <div class="stat">
+            <b id="statPublished">0</b>
+            <span>Published</span>
+        </div>
+
+    </div>
+
+    <div class="tabs">
+
+        <button
+            class="tab active"
+            data-tab="newsPanel">
+            News
+        </button>
+
+        <button
+            class="tab"
+            data-tab="videoPanel">
+            Videos
+        </button>
+
+        <button
+            class="tab"
+            data-tab="trendingPanel">
+            Trending
+        </button>
+
+    </div>
+
+
+    <!-- =================================================
+         NEWS
+    ================================================== -->
+    <section id="newsPanel" class="panel active">
+
+        <div class="card">
+
+            <div class="section-title">
+                📰 News Manager
+            </div>
+
+            <form id="newsForm">
+
+                <input type="hidden" id="newsId">
+
+                <div class="form-grid">
+
+                    <div>
+                        <label>Category</label>
+                        <select id="newsCategory">
+                            <option>Latest</option>
+                            <option>India</option>
+                            <option>World</option>
+                            <option>Telangana</option>
+                            <option>Andhra Pradesh</option>
+                            <option>Politics</option>
+                            <option>Business</option>
+                            <option>Sports</option>
+                            <option>Technology</option>
+                            <option>Entertainment</option>
+                            <option>Education</option>
+                            <option>Jobs</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label>Tag</label>
+                        <input
+                            id="newsTag"
+                            placeholder="BREAKING / EXCLUSIVE"
+                        >
+                    </div>
+
+                    <div class="full-row">
+                        <label>Headline</label>
+                        <input
+                            id="newsTitle"
+                            placeholder="News headline"
+                            required
+                        >
+                    </div>
+
+                    <div class="full-row">
+                        <label>News Script / Description</label>
+                        <textarea
+                            id="newsDescription"
+                            placeholder="Complete news script..."
+                            required></textarea>
+                    </div>
+
+                    <div>
+                        <label>Source</label>
+                        <input
+                            id="newsSource"
+                            placeholder="Source name"
+                        >
+                    </div>
+
+                    <div>
+                        <label>HD Image</label>
+                        <input
+                            id="newsImage"
+                            type="file"
+                            accept="image/*"
+                        >
+                        <div class="file-note">
+                            JPG / PNG / WEBP
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="newsImagePreview"></div>
+
+                <div class="actions">
+
+                    <button
+                        class="btn secondary"
+                        type="submit"
+                        name="status"
+                        value="draft">
+                        Save Draft
+                    </button>
+
+                    <button
+                        class="btn orange"
+                        type="submit"
+                        name="status"
+                        value="demo_approved">
+                        Demo Approval
+                    </button>
+
+                    <button
+                        class="btn green"
+                        type="submit"
+                        name="status"
+                        value="final_approved">
+                        Final Approval
+                    </button>
+
+                    <button
+                        id="newsCancelEdit"
+                        class="small-btn hide"
+                        type="button">
+                        Cancel Edit
+                    </button>
+
+                </div>
+
+                <div id="newsMessage" class="message"></div>
+
+            </form>
+
+        </div>
+
+        <div style="height:15px"></div>
+
+        <div class="section-title">
+            Existing News
+        </div>
+
+        <div id="newsList"></div>
+
+    </section>
+
+
+    <!-- =================================================
+         VIDEOS
+    ================================================== -->
+    <section id="videoPanel" class="panel">
+
+        <div class="card">
+
+            <div class="section-title">
+                🎬 Video Manager
+            </div>
+
+            <form id="videoForm">
+
+                <input type="hidden" id="videoId">
+
+                <div class="form-grid">
+
+                    <div>
+                        <label>Tag</label>
+                        <input
+                            id="videoTag"
+                            placeholder="TRENDING"
+                        >
+                    </div>
+
+                    <div>
+                        <label>Thumbnail</label>
+                        <input
+                            id="videoThumbnail"
+                            type="file"
+                            accept="image/*"
+                        >
+                    </div>
+
+                    <div class="full-row">
+                        <label>Title</label>
+                        <input
+                            id="videoTitle"
+                            placeholder="Video title"
+                            required
+                        >
+                    </div>
+
+                    <div class="full-row">
+                        <label>Description</label>
+                        <textarea
+                            id="videoDescription"
+                            placeholder="Video description"></textarea>
+                    </div>
+
+                    <div class="full-row">
+                        <label>Video</label>
+                        <input
+                            id="videoFile"
+                            type="file"
+                            accept="video/*"
+                        >
+                        <div class="file-note">
+                            MP4 / WEBM recommended
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="videoPreview"></div>
+
+                <div class="actions">
+
+                    <button
+                        class="btn secondary"
+                        type="submit"
+                        name="status"
+                        value="draft">
+                        Save Draft
+                    </button>
+
+                    <button
+                        class="btn orange"
+                        type="submit"
+                        name="status"
+                        value="demo_approved">
+                        Demo
+                    </button>
+
+                    <button
+                        class="btn green"
+                        type="submit"
+                        name="status"
+                        value="final_approved">
+                        Publish
+                    </button>
+
+                    <button
+                        id="videoCancelEdit"
+                        class="small-btn hide"
+                        type="button">
+                        Cancel Edit
+                    </button>
+
+                </div>
+
+                <div id="videoMessage" class="message"></div>
+
+            </form>
+
+        </div>
+
+        <div style="height:15px"></div>
+
+        <div class="section-title">
+            Existing Videos
+        </div>
+
+        <div id="videoList"></div>
+
+    </section>
+
+
+    <!-- =================================================
+         TRENDING
+    ================================================== -->
+    <section id="trendingPanel" class="panel">
+
+        <div class="card">
+
+            <div class="section-title">
+                🔥 Trending Manager
+            </div>
+
+            <form id="trendingForm">
+
+                <input type="hidden" id="trendingId">
+
+                <input
+                    id="trendingTitle"
+                    placeholder="Trending title"
+                    required
+                >
+
+                <div class="form-grid">
+
+                    <div>
+                        <input
+                            id="trendingTime"
+                            placeholder="2 min ago"
+                        >
+                    </div>
+
+                    <div>
+                        <input
+                            id="trendingRank"
+                            type="number"
+                            placeholder="Rank"
+                            value="1"
+                        >
+                    </div>
+
+                </div>
+
+                <label>
+                    <input
+                        id="trendingPublished"
+                        type="checkbox"
+                        checked
+                        style="width:auto">
+                    Published
+                </label>
+
+                <div class="actions">
+
+                    <button
+                        class="btn green"
+                        type="submit">
+                        Save Trending
+                    </button>
+
+                    <button
+                        id="trendingCancelEdit"
+                        class="small-btn hide"
+                        type="button">
+                        Cancel Edit
+                    </button>
+
+                </div>
+
+                <div id="trendingMessage" class="message"></div>
+
+            </form>
+
+        </div>
+
+        <div style="height:15px"></div>
+
+        <div class="section-title">
+            Existing Trending
+        </div>
+
+        <div id="trendingList"></div>
+
+    </section>
+
+</div>
+</div>
+
+
+<script>
+/* =========================================================
+   SUPABASE
+========================================================= */
+
+const SUPABASE_URL =
+    "https://eaowxilhfzyukzetgqxo.supabase.co";
+
+const SUPABASE_KEY =
+    "sb_publishable_Z3xsADypaOjX8GEQEOLUdg_vbxynHRx";
+
+const db =
+    supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY,
+        {
+            auth:{
+                persistSession:true,
+                autoRefreshToken:true,
+                detectSessionInUrl:true,
+                flowType:"pkce"
+            }
+        }
+    );
+
+
+/* =========================================================
+   AUTH
+========================================================= */
+
+const ALLOWED_EMAIL =
+    "rammaheshbabu123@gmail.com";
+
+
+const $ = id =>
+    document.getElementById(id);
+
+
+function showOnly(id){
+
+    document
+        .querySelectorAll(".screen")
+        .forEach(x => {
+            x.style.display = "none";
+        });
+
+    const el = $(id);
+
+    if(el)
+        el.style.display = "block";
+}
+
+
+function redirectUrl(){
+
+    return (
+        window.location.origin +
+        window.location.pathname
+    );
+}
+
+
+/* =========================================================
+   ADMIN CHECK
+========================================================= */
+
+async function verifyManager(){
+
+    const {
+        data:{user},
+        error
+    } =
+    await db.auth.getUser();
+
+    if(error || !user)
+        return false;
+
+    if(
+        !user.email ||
+        user.email.toLowerCase() !==
+        ALLOWED_EMAIL.toLowerCase()
+    ){
+
+        await db.auth.signOut();
+
+        alert("Access denied.");
+
+        showOnly("loginScreen");
+
+        return false;
+    }
+
+    const {
+        data:admin,
+        error:adminError
+    } =
+    await db
+        .from("admins")
+        .select("id,email,role")
+        .eq("id",user.id)
+        .maybeSingle();
+
+    if(adminError){
+
+        console.error(adminError);
+
+        /*
+          If admins RLS is blocking SELECT,
+          email verification still protects this
+          frontend, but production RLS should also
+          protect INSERT/UPDATE/DELETE.
+        */
+
+        return true;
+    }
+
+    if(!admin){
+
+        await db.auth.signOut();
+
+        alert("Manager account is not authorized.");
+
+        showOnly("loginScreen");
+
+        return false;
+    }
+
+    return true;
+}
+
+
+/* =========================================================
+   LOGIN
+========================================================= */
+
+$("loginForm").addEventListener(
+"submit",
+async e => {
+
+    e.preventDefault();
+
+    const email =
+        $("loginEmail").value.trim();
+
+    const password =
+        $("loginPassword").value;
+
+    $("loginMessage").textContent =
+        "Signing in...";
+
+    if(
+        email.toLowerCase() !==
+        ALLOWED_EMAIL.toLowerCase()
+    ){
+
+        $("loginMessage").textContent =
+            "This account is not authorized.";
+
+        return;
+    }
+
+    const {
+        data,
+        error
+    } =
+    await db.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    if(error){
+
+        $("loginMessage").textContent =
+            error.message;
+
+        return;
+    }
+
+    const ok =
+        await verifyManager();
+
+    if(!ok)
+        return;
+
+    $("loginMessage").textContent = "";
+
+    showOnly("dashboardScreen");
+
+    await loadAll();
+});
+
+
+/* =========================================================
+   FORGOT PASSWORD
+========================================================= */
+
+$("forgotPasswordBtn").onclick = () => {
+
+    const email =
+        $("loginEmail").value.trim();
+
+    $("forgotEmail").value =
+        email || ALLOWED_EMAIL;
+
+    $("forgotMessage").textContent = "";
+
+    showOnly("forgotScreen");
+};
+
+
+$("backToLoginBtn").onclick = () => {
+
+    $("forgotMessage").textContent = "";
+
+    showOnly("loginScreen");
+};
+
+
+$("forgotForm").addEventListener(
+"submit",
+async e => {
+
+    e.preventDefault();
+
+    const email =
+        $("forgotEmail").value.trim();
+
+    const message =
+        $("forgotMessage");
+
+    message.textContent =
+        "Sending reset link...";
+
+    if(
+        email.toLowerCase() !==
+        ALLOWED_EMAIL.toLowerCase()
+    ){
+
+        message.textContent =
+            "This email is not authorized.";
+
+        return;
+    }
+
+    const {
+        error
+    } =
+    await db.auth.resetPasswordForEmail(
+        email,
+        {
+            redirectTo:redirectUrl()
+        }
+    );
+
+    if(error){
+
+        console.error(error);
+
+        message.textContent =
+            "Error sending recovery email: " +
+            error.message;
+
+        return;
+    }
+
+    message.innerHTML =
+        "✅ Reset link sent.<br><br>" +
+        "Check your email and open the reset link.";
+
+});
+
+
+/* =========================================================
+   RESET PASSWORD
+========================================================= */
+
+$("resetForm").addEventListener(
+"submit",
+async e => {
+
+    e.preventDefault();
+
+    const p =
+        $("newPassword").value;
+
+    const cp =
+        $("confirmPassword").value;
+
+    const msg =
+        $("resetMessage");
+
+    if(p.length < 6){
+
+        msg.textContent =
+            "Password must be at least 6 characters.";
+
+        return;
+    }
+
+    if(p !== cp){
+
+        msg.textContent =
+            "Passwords do not match.";
+
+        return;
+    }
+
+    msg.textContent =
+        "Updating password...";
+
+    const {
+        error
+    } =
+    await db.auth.updateUser({
+        password:p
+    });
+
+    if(error){
+
+        msg.textContent =
+            error.message;
+
+        return;
+    }
+
+    msg.textContent =
+        "✅ Password updated successfully.";
+
+    $("newPassword").value = "";
+    $("confirmPassword").value = "";
+
+    setTimeout(
+    async () => {
+
+        await db.auth.signOut();
+
+        showOnly("loginScreen");
+
+    },1800);
+
+});
+
+
+/* =========================================================
+   RECOVERY CODE
+========================================================= */
+
+async function handleRecoveryCode(){
+
+    const url =
+        new URL(window.location.href);
+
+    const code =
+        url.searchParams.get("code");
+
+    if(!code)
+        return false;
+
+    const {
+        data,
+        error
+    } =
+    await db.auth.exchangeCodeForSession(
+        code
+    );
+
+    if(error){
+
+        console.error(error);
+
+        alert(
+            "Reset link is invalid or expired."
+        );
+
+        showOnly("loginScreen");
+
+        return false;
+    }
+
+    if(data.session){
+
+        window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+        );
+
+        showOnly("resetScreen");
+
+        return true;
+    }
+
+    return false;
+}
+
+
+/* =========================================================
+   RECOVERY HASH
+========================================================= */
+
+async function handleRecoveryHash(){
+
+    const hash =
+        window.location.hash;
+
+    if(!hash)
+        return false;
+
+    const params =
+        new URLSearchParams(
+            hash.substring(1)
+        );
+
+    if(
+        params.get("type") !==
+        "recovery"
+    )
+        return false;
+
+    const {
+        data:{session}
+    } =
+    await db.auth.getSession();
+
+    if(session){
+
+        window.history.replaceState(
+            {},
+            document.title,
+            window.location.pathname
+        );
+
+        showOnly("resetScreen");
+
+        return true;
+    }
+
+    return false;
+}
+
+
+/* =========================================================
+   AUTH STATE
+========================================================= */
+
+db.auth.onAuthStateChange(
+async (event,session) => {
+
+    if(
+        event ===
+        "PASSWORD_RECOVERY"
+    ){
+
+        showOnly("resetScreen");
+
+        return;
+    }
+
+    if(
+        event ===
+        "SIGNED_OUT"
+    ){
+
+        showOnly("loginScreen");
+
+        return;
+    }
+
+});
+
+
+/* =========================================================
+   LOGOUT
+========================================================= */
+
+$("logoutBtn").onclick =
+async () => {
+
+    await db.auth.signOut();
+
+    showOnly("loginScreen");
+};
+
+
+/* =========================================================
+   TABS
+========================================================= */
+
+document
+.querySelectorAll(".tab")
+.forEach(tab => {
+
+    tab.onclick = () => {
+
+        document
+        .querySelectorAll(".tab")
+        .forEach(x =>
+            x.classList.remove("active")
+        );
+
+        document
+        .querySelectorAll(".panel")
+        .forEach(x =>
+            x.classList.remove("active")
+        );
+
+        tab.classList.add("active");
+
+        $(tab.dataset.tab)
+            .classList.add("active");
+
+    };
+
+});
+
+
+/* =========================================================
+   STORAGE
+========================================================= */
+
+function publicFileUrl(bucket,path){
+
+    return (
+        SUPABASE_URL +
+        "/storage/v1/object/public/" +
+        bucket +
+        "/" +
+        path
+    );
+}
+
+
+async function uploadFile(
+    bucket,
+    file
+){
+
+    if(!file)
+        return null;
+
+    const ext =
+        file.name
+        .split(".")
+        .pop()
+        .toLowerCase();
+
+    const path =
+        crypto.randomUUID() +
+        "." +
+        ext;
+
+    const {
+        error
+    } =
+    await db.storage
+        .from(bucket)
+        .upload(
+            path,
+            file,
+            {
+                upsert:false,
+                contentType:file.type,
+                cacheControl:"31536000"
+            }
+        );
+
+    if(error)
+        throw error;
+
+    return publicFileUrl(
+        bucket,
+        path
+    );
+}
+
+
+/* =========================================================
+   NEWS FORM
+========================================================= */
+
+$("newsForm").addEventListener(
+"submit",
+async e => {
+
+    e.preventDefault();
+
+    const status =
+        e.submitter?.value ||
+        "draft";
+
+    const id =
+        $("newsId").value.trim();
+
+    const message =
+        $("newsMessage");
+
+    try{
+
+        message.textContent =
+            "Saving news...";
+
+        let imageUrl = null;
+
+        const file =
+            $("newsImage").files[0];
+
+        if(file){
+
+            imageUrl =
+                await uploadFile(
+                    "news-images",
+                    file
+                );
+        }
+
+        const {
+            data:{user}
+        } =
+        await db.auth.getUser();
+
+        const payload = {
+
+            category:
+                $("newsCategory").value,
+
+            tag:
+                $("newsTag").value.trim(),
+
+            title:
+                $("newsTitle").value.trim(),
+
+            description:
+                $("newsDescription").value.trim(),
+
+            source:
+                $("newsSource").value.trim(),
+
+            approval_status:
+                status,
+
+            published:
+                status === "final_approved",
+
+            updated_at:
+                new Date().toISOString(),
+
+            updated_by:
+                user?.id || null
+
+        };
+
+        if(imageUrl)
+            payload.image_url = imageUrl;
+
+
+        if(id){
+
+            const {
+                error
+            } =
+            await db
+                .from("news")
+                .update(payload)
+                .eq("id",id);
+
+            if(error)
+                throw error;
+
+        }else{
+
+            payload.created_by =
+                user?.id || null;
+
+            const {
+                error
+            } =
+            await db
+                .from("news")
+                .insert(payload);
+
+            if(error)
+                throw error;
+        }
+
+        message.textContent =
+            "✅ News saved successfully.";
+
+        resetNewsForm();
+
+        await loadNews();
+
+        await loadStats();
+
+    }catch(err){
+
+        console.error(err);
+
+        message.textContent =
+            "Error: " + err.message;
+    }
+
+});
+
+
+/* =========================================================
+   NEWS LIST
+========================================================= */
+
+async function loadNews(){
+
+    const {
+        data,
+        error
+    } =
+    await db
+        .from("news")
+        .select("*")
+        .order(
+            "published_at",
+            {ascending:false}
+        );
+
+    if(error){
+
+        console.error(error);
+
+        $("newsList").innerHTML =
+            `<div class="item">
+                ${error.message}
+             </div>`;
+
+        return;
+    }
+
+    $("newsList").innerHTML = "";
+
+    if(!data?.length){
+
+        $("newsList").innerHTML =
+            `<div class="item">
+                No news found.
+             </div>`;
+
+        return;
+    }
+
+    data.forEach(n => {
+
+        const item =
+            document.createElement("div");
+
+        item.className = "item";
+
+        item.innerHTML = `
+
+            <div class="item-top">
+
+                <div class="item-title">
+                    ${escapeHtml(n.title || "")}
+                </div>
+
+                <span class="badge">
+                    ${escapeHtml(
+                        n.approval_status ||
+                        (n.published
+                            ?"published"
+                            :"draft")
+                    )}
+                </span>
+
+            </div>
+
+            ${
+                n.image_url
+                ? `<img class="preview"
+                     src="${escapeAttr(n.image_url)}">`
+                : ""
+            }
+
+            <div class="meta">
+                ${escapeHtml(n.category || "")}
+                ·
+                ${escapeHtml(n.tag || "")}
+                ·
+                ${escapeHtml(n.source || "")}
+            </div>
+
+            <div class="meta">
+                Views: ${n.views || 0}
+                · Likes: ${n.likes || 0}
+                · Shares: ${n.shares || 0}
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="small-btn"
+                    data-edit="${n.id}">
+                    Edit
+                </button>
+
+                <button
+                    class="small-btn green"
+                    data-publish="${n.id}">
+                    Publish
+                </button>
+
+                <button
+                    class="small-btn orange"
+                    data-demo="${n.id}">
+                    Demo
+                </button>
+
+                <button
+                    class="small-btn red"
+                    data-delete="${n.id}">
+                    Delete
+                </button>
+
+            </div>
+        `;
+
+        $("newsList").appendChild(item);
+    });
+
+    $("newsList")
+    .querySelectorAll("[data-edit]")
+    .forEach(btn =>
+        btn.onclick = () =>
+            editNews(btn.dataset.edit)
+    );
+
+    $("newsList")
+    .querySelectorAll("[data-publish]")
+    .forEach(btn =>
+        btn.onclick = () =>
+            changeNewsStatus(
+                btn.dataset.publish,
+                "final_approved"
+            )
+    );
+
+    $("newsList")
+    .querySelectorAll("[data-demo]")
+    .forEach(btn =>
+        btn.onclick = () =>
+            changeNewsStatus(
+                btn.dataset.demo,
+                "demo_approved"
+            )
+    );
+
+    $("newsList")
+    .querySelectorAll("[data-delete]")
+    .forEach(btn =>
+        btn.onclick = () =>
+            deleteNews(btn.dataset.delete)
+    );
+}
+
+
+/* =========================================================
+   EDIT NEWS
+========================================================= */
+
+async function editNews(id){
+
+    const {
+        data,
+        error
+    } =
+    await db
+        .from("news")
+        .select("*")
+        .eq("id",id)
+        .single();
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    $("newsId").value =
+        data.id;
+
+    $("newsCategory").value =
+        data.category || "Latest";
+
+    $("newsTag").value =
+        data.tag || "";
+
+    $("newsTitle").value =
+        data.title || "";
+
+    $("newsDescription").value =
+        data.description || "";
+
+    $("newsSource").value =
+        data.source || "";
+
+    $("newsCancelEdit")
+        .classList.remove("hide");
+
+    document
+        .querySelector('[data-tab="newsPanel"]')
+        ?.click();
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+/* =========================================================
+   NEWS STATUS
+========================================================= */
+
+async function changeNewsStatus(
+    id,
+    status
+){
+
+    const {
+        error
+    } =
+    await db
+        .from("news")
+        .update({
+            approval_status:status,
+            published:
+                status === "final_approved",
+            updated_at:
+                new Date().toISOString()
+        })
+        .eq("id",id);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    await loadNews();
+    await loadStats();
+}
+
+
+/* =========================================================
+   DELETE NEWS
+========================================================= */
+
+async function deleteNews(id){
+
+    if(!confirm(
+        "Delete this news permanently?"
+    ))
+        return;
+
+    const {
+        error
+    } =
+    await db
+        .from("news")
+        .delete()
+        .eq("id",id);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    await loadNews();
+    await loadStats();
+}
+
+
+function resetNewsForm(){
+
+    $("newsForm").reset();
+
+    $("newsId").value = "";
+
+    $("newsCategory").value =
+        "Latest";
+
+    $("newsCancelEdit")
+        .classList.add("hide");
+
+    $("newsImagePreview").innerHTML = "";
+}
+
+
+$("newsCancelEdit").onclick =
+resetNewsForm;
+
+
+/* =========================================================
+   VIDEO FORM
+========================================================= */
+
+$("videoForm").addEventListener(
+"submit",
+async e => {
+
+    e.preventDefault();
+
+    const status =
+        e.submitter?.value ||
+        "draft";
+
+    const id =
+        $("videoId").value.trim();
+
+    const message =
+        $("videoMessage");
+
+    try{
+
+        message.textContent =
+            "Saving video...";
+
+        let videoUrl = null;
+        let thumbnailUrl = null;
+
+        const videoFile =
+            $("videoFile").files[0];
+
+        const thumbnailFile =
+            $("videoThumbnail").files[0];
+
+        if(videoFile){
+
+            videoUrl =
+                await uploadFile(
+                    "news-videos",
+                    videoFile
+                );
+        }
+
+        if(thumbnailFile){
+
+            thumbnailUrl =
+                await uploadFile(
+                    "news-images",
+                    thumbnailFile
+                );
+        }
+
+        const {
+            data:{user}
+        } =
+        await db.auth.getUser();
+
+        const payload = {
+
+            tag:
+                $("videoTag").value.trim(),
+
+            title:
+                $("videoTitle").value.trim(),
+
+            description:
+                $("videoDescription").value.trim(),
+
+            approval_status:
+                status,
+
+            published:
+                status === "final_approved",
+
+            updated_at:
+                new Date().toISOString(),
+
+            updated_by:
+                user?.id || null
+
+        };
+
+        if(videoUrl)
+            payload.video_url =
+                videoUrl;
+
+        if(thumbnailUrl)
+            payload.thumbnail_url =
+                thumbnailUrl;
+
+
+        if(id){
+
+            const {
+                error
+            } =
+            await db
+                .from("videos")
+                .update(payload)
+                .eq("id",id);
+
+            if(error)
+                throw error;
+
+        }else{
+
+            payload.created_by =
+                user?.id || null;
+
+            const {
+                error
+            } =
+            await db
+                .from("videos")
+                .insert(payload);
+
+            if(error)
+                throw error;
+        }
+
+        message.textContent =
+            "✅ Video saved successfully.";
+
+        resetVideoForm();
+
+        await loadVideos();
+        await loadStats();
+
+    }catch(err){
+
+        console.error(err);
+
+        message.textContent =
+            "Error: " + err.message;
+    }
+
+});
+
+
+/* =========================================================
+   VIDEOS LIST
+========================================================= */
+
+async function loadVideos(){
+
+    const {
+        data,
+        error
+    } =
+    await db
+        .from("videos")
+        .select("*")
+        .order(
+            "created_at",
+            {ascending:false}
+        );
+
+    if(error){
+
+        $("videoList").innerHTML =
+            `<div class="item">
+                ${error.message}
+             </div>`;
+
+        return;
+    }
+
+    $("videoList").innerHTML = "";
+
+    if(!data?.length){
+
+        $("videoList").innerHTML =
+            `<div class="item">
+                No videos found.
+             </div>`;
+
+        return;
+    }
+
+    data.forEach(v => {
+
+        const item =
+            document.createElement("div");
+
+        item.className = "item";
+
+        item.innerHTML = `
+
+            <div class="item-top">
+
+                <div class="item-title">
+                    ${escapeHtml(v.title || "")}
+                </div>
+
+                <span class="badge">
+                    ${escapeHtml(
+                        v.approval_status ||
+                        (v.published
+                            ?"published"
+                            :"draft")
+                    )}
+                </span>
+
+            </div>
+
+            ${
+                v.thumbnail_url
+                ? `<img class="preview"
+                     src="${escapeAttr(v.thumbnail_url)}">`
+                : ""
+            }
+
+            <div class="meta">
+                ${escapeHtml(v.tag || "")}
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="small-btn"
+                    data-edit-video="${v.id}">
+                    Edit
+                </button>
+
+                <button
+                    class="small-btn green"
+                    data-publish-video="${v.id}">
+                    Publish
+                </button>
+
+                <button
+                    class="small-btn orange"
+                    data-demo-video="${v.id}">
+                    Demo
+                </button>
+
+                <button
+                    class="small-btn red"
+                    data-delete-video="${v.id}">
+                    Delete
+                </button>
+
+            </div>
+        `;
+
+        $("videoList").appendChild(item);
+    });
+
+
+    $("videoList")
+    .querySelectorAll("[data-edit-video]")
+    .forEach(btn =>
+        btn.onclick = () =>
+            editVideo(
+                btn.dataset.editVideo
+            )
+    );
+
+
+    $("videoList")
+    .querySelectorAll("[data-publish-video]")
+    .forEach(btn =>
+        btn.onclick = () =>
+            changeVideoStatus(
+                btn.dataset.publishVideo,
+                "final_approved"
+            )
+    );
+
+
+    $("videoList")
+    .querySelectorAll("[data-demo-video]")
+    .forEach(btn =>
+        btn.onclick = () =>
+            changeVideoStatus(
+                btn.dataset.demoVideo,
+                "demo_approved"
+            )
+    );
+
+
+    $("videoList")
+    .querySelectorAll("[data-delete-video]")
+    .forEach(btn =>
+        btn.onclick = () =>
+            deleteVideo(
+                btn.dataset.deleteVideo
+            )
+    );
+}
+
+
+/* =========================================================
+   EDIT VIDEO
+========================================================= */
+
+async function editVideo(id){
+
+    const {
+        data,
+        error
+    } =
+    await db
+        .from("videos")
+        .select("*")
+        .eq("id",id)
+        .single();
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    $("videoId").value =
+        data.id;
+
+    $("videoTag").value =
+        data.tag || "";
+
+    $("videoTitle").value =
+        data.title || "";
+
+    $("videoDescription").value =
+        data.description || "";
+
+    $("videoCancelEdit")
+        .classList.remove("hide");
+
+    document
+        .querySelector('[data-tab="videoPanel"]')
+        ?.click();
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+/* =========================================================
+   VIDEO STATUS
+========================================================= */
+
+async function changeVideoStatus(
+    id,
+    status
+){
+
+    const {
+        error
+    } =
+    await db
+        .from("videos")
+        .update({
+            approval_status:status,
+            published:
+                status === "final_approved",
+            updated_at:
+                new Date().toISOString()
+        })
+        .eq("id",id);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    await loadVideos();
+    await loadStats();
+}
+
+
+/* =========================================================
+   DELETE VIDEO
+========================================================= */
+
+async function deleteVideo(id){
+
+    if(!confirm(
+        "Delete this video permanently?"
+    ))
+        return;
+
+    const {
+        error
+    } =
+    await db
+        .from("videos")
+        .delete()
+        .eq("id",id);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    await loadVideos();
+    await loadStats();
+}
+
+
+function resetVideoForm(){
+
+    $("videoForm").reset();
+
+    $("videoId").value = "";
+
+    $("videoCancelEdit")
+        .classList.add("hide");
+
+    $("videoPreview").innerHTML = "";
+}
+
+
+$("videoCancelEdit").onclick =
+resetVideoForm;
+
+
+/* =========================================================
+   TRENDING FORM
+========================================================= */
+
+$("trendingForm").addEventListener(
+"submit",
+async e => {
+
+    e.preventDefault();
+
+    const id =
+        $("trendingId").value.trim();
+
+    const payload = {
+
+        title:
+            $("trendingTitle").value.trim(),
+
+        time:
+            $("trendingTime").value.trim(),
+
+        rank:
+            Number(
+                $("trendingRank").value || 1
+            ),
+
+        published:
+            $("trendingPublished").checked
+    };
+
+    const message =
+        $("trendingMessage");
+
+    message.textContent =
+        "Saving...";
+
+    let result;
+
+    if(id){
+
+        result =
+            await db
+                .from("trending")
+                .update(payload)
+                .eq("id",id);
+
+    }else{
+
+        result =
+            await db
+                .from("trending")
+                .insert(payload);
+    }
+
+    if(result.error){
+
+        message.textContent =
+            result.error.message;
+
+        return;
+    }
+
+    message.textContent =
+        "✅ Trending saved.";
+
+    resetTrendingForm();
+
+    await loadTrending();
+    await loadStats();
+
+});
+
+
+/* =========================================================
+   TRENDING LIST
+========================================================= */
+
+async function loadTrending(){
+
+    const {
+        data,
+        error
+    } =
+    await db
+        .from("trending")
+        .select("*")
+        .order(
+            "rank",
+            {ascending:true}
+        );
+
+    if(error){
+
+        $("trendingList").innerHTML =
+            `<div class="item">
+                ${error.message}
+             </div>`;
+
+        return;
+    }
+
+    $("trendingList").innerHTML = "";
+
+    if(!data?.length){
+
+        $("trendingList").innerHTML =
+            `<div class="item">
+                No trending items.
+             </div>`;
+
+        return;
+    }
+
+    data.forEach(t => {
+
+        const item =
+            document.createElement("div");
+
+        item.className = "item";
+
+        item.innerHTML = `
+
+            <div class="item-top">
+
+                <div>
+                    <b>#${t.rank || 0}</b>
+                    &nbsp;
+                    ${escapeHtml(t.title || "")}
+                </div>
+
+                <span class="badge">
+                    ${t.published
+                        ?"Published"
+                        :"Hidden"}
+                </span>
+
+            </div>
+
+            <div class="meta">
+                ${escapeHtml(t.time || "")}
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="small-btn"
+                    data-edit-trending="${t.id}">
+                    Edit
+                </button>
+
+                <button
+                    class="small-btn ${
+                        t.published
+                        ?"orange"
+                        :"green"
+                    }"
+                    data-toggle-trending="${t.id}">
+                    ${t.published
+                        ?"Hide"
+                        :"Publish"}
+                </button>
+
+                <button
+                    class="small-btn red"
+                    data-delete-trending="${t.id}">
+                    Delete
+                </button>
+
+            </div>
+        `;
+
+        $("trendingList")
+            .appendChild(item);
+    });
+
+
+    $("trendingList")
+    .querySelectorAll(
+        "[data-edit-trending]"
+    )
+    .forEach(btn =>
+        btn.onclick = () =>
+            editTrending(
+                btn.dataset.editTrending
+            )
+    );
+
+
+    $("trendingList")
+    .querySelectorAll(
+        "[data-toggle-trending]"
+    )
+    .forEach(btn =>
+        btn.onclick = () =>
+            toggleTrending(
+                btn.dataset.toggleTrending
+            )
+    );
+
+
+    $("trendingList")
+    .querySelectorAll(
+        "[data-delete-trending]"
+    )
+    .forEach(btn =>
+        btn.onclick = () =>
+            deleteTrending(
+                btn.dataset.deleteTrending
+            )
+    );
+}
+
+
+/* =========================================================
+   EDIT TRENDING
+========================================================= */
+
+async function editTrending(id){
+
+    const {
+        data,
+        error
+    } =
+    await db
+        .from("trending")
+        .select("*")
+        .eq("id",id)
+        .single();
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    $("trendingId").value =
+        data.id;
+
+    $("trendingTitle").value =
+        data.title || "";
+
+    $("trendingTime").value =
+        data.time || "";
+
+    $("trendingRank").value =
+        data.rank || 1;
+
+    $("trendingPublished").checked =
+        !!data.published;
+
+    $("trendingCancelEdit")
+        .classList.remove("hide");
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+$("trendingCancelEdit").onclick =
+resetTrendingForm;
+
+
+function resetTrendingForm(){
+
+    $("trendingForm").reset();
+
+    $("trendingId").value = "";
+
+    $("trendingRank").value = 1;
+
+    $("trendingPublished").checked =
+        true;
+
+    $("trendingCancelEdit")
+        .classList.add("hide");
+}
+
+
+/* =========================================================
+   TOGGLE TRENDING
+========================================================= */
+
+async function toggleTrending(id){
+
+    const {
+        data,
+        error
+    } =
+    await db
+        .from("trending")
+        .select("published")
+        .eq("id",id)
+        .single();
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    const result =
+        await db
+            .from("trending")
+            .update({
+                published:
+                    !data.published
+            })
+            .eq("id",id);
+
+    if(result.error){
+
+        alert(result.error.message);
+
+        return;
+    }
+
+    await loadTrending();
+}
+
+
+/* =========================================================
+   DELETE TRENDING
+========================================================= */
+
+async function deleteTrending(id){
+
+    if(!confirm(
+        "Delete this trending item?"
+    ))
+        return;
+
+    const {
+        error
+    } =
+    await db
+        .from("trending")
+        .delete()
+        .eq("id",id);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    await loadTrending();
+    await loadStats();
+}
+
+
+/* =========================================================
+   STATS
+========================================================= */
+
+async function loadStats(){
+
+    const news =
+        await db
+            .from("news")
+            .select("id,published");
+
+    const videos =
+        await db
+            .from("videos")
+            .select("id");
+
+    const trending =
+        await db
+            .from("trending")
+            .select("id");
+
+    $("statNews").textContent =
+        news.data?.length || 0;
+
+    $("statVideos").textContent =
+        videos.data?.length || 0;
+
+    $("statTrending").textContent =
+        trending.data?.length || 0;
+
+    $("statPublished").textContent =
+        news.data
+        ?.filter(x => x.published)
+        .length || 0;
+}
+
+
+/* =========================================================
+   LOAD ALL
+========================================================= */
+
+async function loadAll(){
+
+    await Promise.all([
+        loadNews(),
+        loadVideos(),
+        loadTrending(),
+        loadStats()
+    ]);
+}
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHtml(value){
+
+    return String(value ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+
+function escapeAttr(value){
+
+    return escapeHtml(value);
+}
+
+
+/* =========================================================
+   IMAGE PREVIEW
+========================================================= */
+
+$("newsImage").addEventListener(
+"change",
+e => {
+
+    const file =
+        e.target.files[0];
+
+    if(!file)
+        return;
+
+    const url =
+        URL.createObjectURL(file);
+
+    $("newsImagePreview").innerHTML =
+        `<img class="preview" src="${url}">`;
+});
+
+
+$("videoThumbnail").addEventListener(
+"change",
+e => {
+
+    const file =
+        e.target.files[0];
+
+    if(!file)
+        return;
+
+    const url =
+        URL.createObjectURL(file);
+
+    $("videoPreview").innerHTML =
+        `<img class="preview" src="${url}">`;
+});
+
+
+/* =========================================================
+   INITIAL START
+========================================================= */
+
+(async function(){
+
+    /*
+      1. Supabase PKCE recovery:
+         ?code=xxxx
+    */
+
+    if(
+        await handleRecoveryCode()
+    )
+        return;
+
+
+    /*
+      2. Recovery hash:
+         #type=recovery
+    */
+
+    if(
+        await handleRecoveryHash()
+    )
+        return;
+
+
+    /*
+      3. Normal session
+    */
+
+    const {
+        data:{session}
+    } =
+    await db.auth.getSession();
+
+
+    if(!session){
+
+        showOnly("loginScreen");
+
+        return;
+    }
+
+
+    /*
+      4. Verify manager
+    */
+
+    const ok =
+        await verifyManager();
+
+    if(!ok){
+
+        showOnly("loginScreen");
+
+        return;
+    }
+
+
+    /*
+      5. Dashboard
+    */
+
+    showOnly("dashboardScreen");
+
+    await loadAll();
+
+})();
+</script>
+
+</body>
+</html>
