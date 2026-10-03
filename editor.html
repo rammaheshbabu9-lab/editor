@@ -1,195 +1,804 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="te">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>ONE MINUTE NEWS — Management</title>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+
+<title>ప్రాంతీయ ప్రతిధ్వని NEWS</title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
-*{box-sizing:border-box}
-body{
+*{
+    box-sizing:border-box;
     margin:0;
-    font-family:Inter,Arial,sans-serif;
-    background:#0b0d12;
+    padding:0;
+}
+
+html,
+body{
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:#071e30;
+}
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.top-navbar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:65px;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:8px 12px;
+    background:#0b3c5d;
     color:#fff;
+    border-bottom:3px solid #ffd700;
+    box-shadow:0 3px 10px rgba(0,0,0,.35);
 }
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-.container{
-    width:min(100%,1000px);
-    margin:auto;
-    padding:16px;
-}
-.screen{display:none}
-.auth-wrap{
-    min-height:100vh;
+
+.header-left,
+.header-right{
+    width:45px;
     display:flex;
     align-items:center;
     justify-content:center;
-    padding:20px;
 }
-.card{
-    background:#151922;
-    border:1px solid #292e3a;
-    border-radius:18px;
-    padding:22px;
-    box-shadow:0 15px 50px #0008;
-}
-.auth-card{width:min(100%,420px)}
-.logo{
-    text-align:center;
-    font-size:26px;
-    font-weight:900;
-    margin-bottom:5px;
-}
-.sub{
-    text-align:center;
-    color:#9da5b5;
-    margin-bottom:22px;
-}
-input,textarea,select{
-    width:100%;
-    background:#0e1118;
-    color:#fff;
-    border:1px solid #303645;
-    border-radius:11px;
-    padding:13px;
-    outline:none;
-    margin:6px 0 10px;
-}
-textarea{min-height:110px;resize:vertical}
-input:focus,textarea:focus,select:focus{
-    border-color:#7c5cff;
-}
-.btn{
-    border:0;
-    border-radius:11px;
-    padding:12px 15px;
-    font-weight:800;
-    background:#7357ff;
-    color:white;
-}
-.btn:hover{opacity:.9}
-.btn.secondary{background:#272c38}
-.btn.green{background:#168a55}
-.btn.red{background:#b93645}
-.btn.orange{background:#b56a12}
-.btn.full{width:100%}
-.small-btn{
-    padding:7px 10px;
-    border:0;
-    border-radius:8px;
-    background:#292f3c;
-    color:#fff;
-    margin:2px;
-}
-.message{
-    margin-top:10px;
-    color:#aeb6c6;
-    line-height:1.5;
-}
-.header{
+
+.profile-icon,
+.notification-icon{
+    width:38px;
+    height:38px;
+    border:2px solid #ffd700;
+    border-radius:50%;
+    background:rgba(255,215,0,.12);
+    color:#ffd700;
     display:flex;
     align-items:center;
-    justify-content:space-between;
-    gap:10px;
-    margin-bottom:18px;
+    justify-content:center;
+    cursor:pointer;
+    font-size:17px;
+    position:relative;
 }
-.header h1{font-size:22px;margin:0}
-.tabs{
-    display:flex;
-    gap:8px;
-    overflow-x:auto;
-    margin-bottom:15px;
-}
-.tab{
-    white-space:nowrap;
-    border:1px solid #303645;
-    background:#151922;
-    color:#fff;
-    padding:10px 15px;
-    border-radius:10px;
-}
-.tab.active{background:#7357ff;border-color:#7357ff}
-.panel{display:none}
-.panel.active{display:block}
-.grid{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:10px;
-    margin-bottom:16px;
-}
-.stat{
-    background:#151922;
-    border:1px solid #292e3a;
-    border-radius:14px;
-    padding:15px;
-}
-.stat b{font-size:22px;display:block}
-.stat span{font-size:12px;color:#929aaa}
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:10px;
-}
-.full-row{grid-column:1/-1}
-.section-title{
-    font-size:18px;
-    font-weight:900;
-    margin:5px 0 15px;
-}
-.item{
-    background:#151922;
-    border:1px solid #292e3a;
-    border-radius:14px;
-    padding:13px;
-    margin-top:10px;
-}
-.item-top{
-    display:flex;
-    justify-content:space-between;
-    gap:10px;
-}
-.item-title{
+
+.brand-title{
+    flex:1;
+    text-align:center;
+    font-size:17px;
+    line-height:1.2;
     font-weight:800;
+    white-space:nowrap;
+}
+
+.brand-title span{
+    display:block;
+    color:#ffd700;
+    font-size:8px;
+    margin-top:3px;
+    letter-spacing:.4px;
+}
+
+.header-right{
+    gap:5px;
+    width:auto;
+}
+
+.header-add-btn{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:2px solid white;
+    background:#ffd700;
+    color:#0b3c5d;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:24px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+/* =====================================================
+   FEED
+===================================================== */
+
+.feed-container{
+    position:fixed;
+    top:65px;
+    left:0;
+    right:0;
+    bottom:0;
+
+    width:100%;
+    max-width:480px;
+    margin:0 auto;
+
+    overflow-y:auto;
+    overflow-x:hidden;
+
+    scroll-snap-type:y mandatory;
+    -webkit-overflow-scrolling:touch;
+}
+
+.feed-container::-webkit-scrollbar{
+    display:none;
+}
+
+/* EXACT SCREEN CARD */
+
+.news-card{
+    width:100%;
+    height:calc(100vh - 65px);
+    min-height:calc(100vh - 65px);
+    max-height:calc(100vh - 65px);
+
+    background:#fff;
+
+    display:grid;
+    grid-template-rows:
+        minmax(190px,34vh)
+        minmax(0,1fr)
+        54px;
+
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
+
+    overflow:hidden;
+}
+
+/* =====================================================
+   MEDIA
+===================================================== */
+
+.news-media{
+    width:100%;
+    height:100%;
+
+    position:relative;
+
+    background:#edf2f7;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    overflow:hidden;
+
+    border-bottom:2px solid #ffd700;
+}
+
+.news-media img,
+.news-media video{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+.news-media video{
+    background:#000;
+}
+
+.badge{
+    position:absolute;
+    top:12px;
+    left:12px;
+    z-index:5;
+
+    max-width:70%;
+
+    background:#e02424;
+    color:white;
+
+    padding:5px 9px;
+    border-radius:4px;
+
+    font-size:10px;
+    font-weight:800;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.watermark{
+    position:absolute;
+    right:9px;
+    bottom:8px;
+
+    background:rgba(11,60,93,.88);
+    color:#ffd700;
+
+    padding:4px 7px;
+    border-radius:4px;
+
+    font-size:9px;
+    font-weight:700;
+}
+
+/* =====================================================
+   NEWS CONTENT
+===================================================== */
+
+.news-body{
+    min-height:0;
+
+    padding:
+        11px 16px
+        8px;
+
+    overflow:hidden;
+
+    display:flex;
+    flex-direction:column;
+}
+
+.news-title{
+    color:#0b3c5d;
+
+    font-size:
+        clamp(17px,4.8vw,21px);
+
+    line-height:1.28;
+
+    font-weight:800;
+
+    margin-bottom:6px;
+
+    display:-webkit-box;
+    -webkit-line-clamp:3;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
+
+.news-meta{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:8px;
+
+    padding-bottom:6px;
+    margin-bottom:7px;
+
+    border-bottom:1px dashed #cbd5e1;
+
+    color:#64748b;
+
+    font-size:10px;
+
+    flex-shrink:0;
+}
+
+.news-meta span{
+    overflow:hidden;
+    text-overflow:ellipsis;
+    white-space:nowrap;
+}
+
+.news-text{
+    color:#334155;
+
+    font-size:
+        clamp(13px,3.8vw,15px);
+
+    line-height:1.48;
+
+    text-align:left;
+
+    white-space:pre-wrap;
+
+    overflow-y:auto;
+    overflow-x:hidden;
+
+    padding-right:3px;
+
+    flex:1;
+}
+
+.news-text::-webkit-scrollbar{
+    width:3px;
+}
+
+.news-text::-webkit-scrollbar-thumb{
+    background:#cbd5e1;
+    border-radius:5px;
+}
+
+/* =====================================================
+   FOOTER
+===================================================== */
+
+.footer{
+    height:54px;
+    min-height:54px;
+
+    background:#07263d;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    padding:
+        7px 18px;
+
+    border-top:1px solid rgba(255,215,0,.25);
+}
+
+.action{
+    border:0;
+    background:none;
+
+    color:#ffd700;
+
+    cursor:pointer;
+
+    font-size:13px;
+    font-weight:800;
+
+    padding:8px 14px;
+    border-radius:8px;
+
+    min-width:100px;
+}
+
+.action:active{
+    transform:scale(.96);
+}
+
+.like.active{
+    color:#ff4b5c;
+    background:rgba(255,255,255,.07);
+}
+
+.share{
+    color:#22c55e;
+}
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty{
+    width:100%;
+    height:100%;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    text-align:center;
+
+    padding:20px;
+    color:white;
+}
+
+.empty-box{
+    background:#0b3c5d;
+
+    border:1px solid #ffd700;
+
+    border-radius:15px;
+
+    padding:25px;
+
+    max-width:330px;
+}
+
+.empty-box h3{
+    color:#ffd700;
+    margin:10px 0;
+}
+
+.empty-box p{
+    font-size:13px;
+    line-height:1.5;
+}
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.modal-bg{
+    position:fixed;
+    inset:0;
+
+    z-index:1000;
+
+    display:none;
+    align-items:center;
+    justify-content:center;
+
+    padding:12px;
+
+    background:rgba(0,0,0,.76);
+}
+
+.modal-bg.show{
+    display:flex;
+}
+
+.modal{
+    width:100%;
+    max-width:440px;
+
+    max-height:
+        calc(100vh - 30px);
+
+    overflow-y:auto;
+
+    background:#fff;
+
+    border-radius:18px;
+
+    padding:21px;
+
+    position:relative;
+}
+
+.modal::-webkit-scrollbar{
+    display:none;
+}
+
+.close{
+    position:absolute;
+
+    right:13px;
+    top:7px;
+
+    width:35px;
+    height:35px;
+
+    border:0;
+
+    background:none;
+
+    color:#64748b;
+
+    font-size:28px;
+
+    cursor:pointer;
+}
+
+.modal h3{
+    color:#0b3c5d;
+
+    margin-bottom:16px;
+
+    padding-bottom:9px;
+
+    border-bottom:2px solid #eee;
+}
+
+label{
+    display:block;
+
+    color:#475569;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    margin-bottom:5px;
+}
+
+input,
+textarea,
+select{
+    width:100%;
+
+    padding:11px;
+
+    margin-bottom:12px;
+
+    border:1px solid #cbd5e1;
+
+    border-radius:8px;
+
+    background:#f8fafc;
+
+    font-size:14px;
+
+    outline:none;
+}
+
+textarea{
+    resize:vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    border-color:#0b3c5d;
+}
+
+.file-box{
+    border:2px dashed #cbd5e1;
+
+    padding:10px;
+
+    border-radius:8px;
+
+    margin-bottom:12px;
+
+    background:#f1f5f9;
+}
+
+.file-box input{
+    margin:0;
+    padding:4px;
+    border:0;
+    background:transparent;
+}
+
+.post-btn{
+    width:100%;
+
+    padding:13px;
+
+    border:0;
+
+    border-radius:8px;
+
+    background:#0b3c5d;
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+.post-btn:disabled{
+    opacity:.55;
+    cursor:not-allowed;
+}
+
+.status{
+    min-height:20px;
+
+    margin-bottom:8px;
+
+    text-align:center;
+
+    font-size:13px;
+
     line-height:1.4;
 }
-.meta{
-    color:#929aaa;
-    font-size:12px;
-    margin-top:7px;
+
+/* =====================================================
+   PROFILE
+===================================================== */
+
+.profile-card{
+    text-align:center;
 }
-.badge{
-    display:inline-block;
-    padding:4px 8px;
-    border-radius:20px;
-    background:#292f3c;
-    font-size:11px;
+
+.guest-avatar{
+    width:75px;
+    height:75px;
+
+    border-radius:50%;
+
+    background:#0b3c5d;
+
+    color:#ffd700;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    font-size:35px;
+
+    margin:3px auto 12px;
+
+    border:3px solid #ffd700;
 }
-.preview{
+
+.guest-name{
+    font-size:19px;
+
+    font-weight:800;
+
+    color:#0b3c5d;
+}
+
+.guest-text{
+    color:#64748b;
+
+    font-size:13px;
+
+    margin:6px 0 16px;
+}
+
+.profile-row{
+    text-align:left;
+
+    background:#f8fafc;
+
+    padding:11px;
+
+    border-radius:9px;
+
+    margin-bottom:8px;
+
+    font-size:13px;
+}
+
+.profile-row strong{
+    color:#0b3c5d;
+}
+
+.notify-btn{
     width:100%;
-    max-height:260px;
-    object-fit:cover;
-    border-radius:10px;
+
+    border:0;
+
+    border-radius:8px;
+
+    padding:12px;
+
+    background:#ffd700;
+
+    color:#0b3c5d;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    margin-top:3px;
+}
+
+.notification-open-btn{
+    width:100%;
+
+    border:1px solid #0b3c5d;
+
+    border-radius:8px;
+
+    padding:11px;
+
+    background:#fff;
+
+    color:#0b3c5d;
+
+    font-weight:800;
+
+    cursor:pointer;
+
     margin-top:8px;
 }
-.actions{
-    margin-top:10px;
-    display:flex;
-    flex-wrap:wrap;
-}
-.file-note{
-    font-size:12px;
-    color:#8e97a8;
-}
-.hide{display:none!important}
 
-@media(max-width:650px){
-    .grid{grid-template-columns:1fr 1fr}
-    .form-grid{grid-template-columns:1fr}
-    .full-row{grid-column:auto}
+/* =====================================================
+   NOTIFICATIONS
+===================================================== */
+
+.notification-list{
+    max-height:55vh;
+
+    overflow-y:auto;
+}
+
+.notification-item{
+    padding:12px;
+
+    border-bottom:1px solid #e2e8f0;
+}
+
+.notification-item strong{
+    color:#0b3c5d;
+
+    font-size:13px;
+}
+
+.notification-item small{
+    display:block;
+
+    color:#64748b;
+
+    margin-top:4px;
+
+    font-size:11px;
+}
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+.toast{
+    position:fixed;
+
+    z-index:3000;
+
+    left:50%;
+    bottom:22px;
+
+    transform:translateX(-50%);
+
+    background:#0b3c5d;
+
+    color:#fff;
+
+    border:1px solid #ffd700;
+
+    border-radius:9px;
+
+    padding:11px 17px;
+
+    display:none;
+
+    max-width:90%;
+
+    text-align:center;
+
+    font-size:13px;
+}
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
+
+@media(max-width:360px){
+
+    .brand-title{
+        font-size:14px;
+    }
+
+    .brand-title span{
+        font-size:7px;
+    }
+
+    .news-card{
+        grid-template-rows:
+            minmax(165px,31vh)
+            minmax(0,1fr)
+            52px;
+    }
+
+    .news-body{
+        padding:
+            9px 13px 6px;
+    }
+
+    .news-title{
+        font-size:16px;
+    }
+
+    .news-text{
+        font-size:12.5px;
+        line-height:1.42;
+    }
+
+    .action{
+        font-size:12px;
+        min-width:90px;
+        padding:7px 9px;
+    }
+}
+
+/* =====================================================
+   TALL MOBILE
+===================================================== */
+
+@media(min-height:800px){
+
+    .news-card{
+        grid-template-rows:
+            minmax(220px,36vh)
+            minmax(0,1fr)
+            56px;
+    }
 }
 </style>
 </head>
@@ -197,2505 +806,1706 @@ input:focus,textarea:focus,select:focus{
 <body>
 
 <!-- =====================================================
-     LOGIN
+     HEADER
 ===================================================== -->
-<div id="loginScreen" class="screen">
-<div class="auth-wrap">
-<div class="card auth-card">
 
-    <div class="logo">ONE MINUTE NEWS</div>
-    <div class="sub">Management Login</div>
+<header class="top-navbar">
 
-    <form id="loginForm">
+    <div class="header-left">
 
-        <input
-            id="loginEmail"
-            type="email"
-            placeholder="Manager email"
-            required
-        >
+        <button
+            class="profile-icon"
+            id="profileBtn"
+            type="button"
+            aria-label="Profile">
 
-        <input
-            id="loginPassword"
-            type="password"
-            placeholder="Password"
-            required
-        >
+            👤
 
-        <button class="btn full" type="submit">
-            Login
         </button>
 
-    </form>
+    </div>
 
-    <button
-        id="forgotPasswordBtn"
-        class="btn secondary full"
-        style="margin-top:10px"
-        type="button">
-        Forgot Password?
-    </button>
 
-    <div id="loginMessage" class="message"></div>
+    <div class="brand-title">
 
-</div>
-</div>
+        ప్రాంతీయ ప్రతిధ్వని న్యూస్
+
+        <span>
+            PRANTHIYA PRATHIDHWANI NEWS • LIVE
+        </span>
+
+    </div>
+
+
+    <div class="header-right">
+
+        <button
+            class="notification-icon"
+            id="notificationBtn"
+            type="button"
+            aria-label="Notifications">
+
+            🔔
+
+        </button>
+
+
+        <button
+            class="header-add-btn"
+            id="openUpload"
+            type="button"
+            aria-label="Upload News">
+
+            +
+
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     NEWS FEED
+===================================================== -->
+
+<main
+    class="feed-container"
+    id="newsFeed">
+
+    <div class="empty">
+
+        NEWS Loading...
+
+    </div>
+
+</main>
+
+
+<!-- =====================================================
+     UPLOAD MODAL
+===================================================== -->
+
+<div
+    class="modal-bg"
+    id="uploadModal">
+
+    <div class="modal">
+
+        <button
+            class="close"
+            id="closeUpload"
+            type="button">
+
+            ×
+
+        </button>
+
+
+        <h3>
+            📰 కొత్త NEWS జోడించండి
+        </h3>
+
+
+        <label>
+            NEWS Category
+        </label>
+
+        <input
+            id="newsBadge"
+            type="text"
+            placeholder="బ్రేకింగ్ న్యూస్ / జిల్లా వార్తలు">
+
+
+        <label>
+            NEWS Headline
+        </label>
+
+        <input
+            id="newsTitle"
+            type="text"
+            placeholder="NEWS ముఖ్య హెడ్‌లైన్">
+
+
+        <label>
+            District / Location
+        </label>
+
+        <input
+            id="newsLocation"
+            type="text"
+            placeholder="నెల్లూరు / గుంటూరు / తిరుపతి">
+
+
+        <label>
+            Image / Video
+        </label>
+
+        <div class="file-box">
+
+            <input
+                id="newsMediaFile"
+                type="file"
+                accept="image/*,video/*">
+
+        </div>
+
+
+        <label>
+            NEWS Matter
+        </label>
+
+        <textarea
+            id="newsBody"
+            rows="5"
+            placeholder="NEWS పూర్తి వివరాలు..."></textarea>
+
+
+        <div
+            class="status"
+            id="uploadStatus">
+        </div>
+
+
+        <button
+            class="post-btn"
+            id="postNewsBtn"
+            type="button">
+
+            🚀 NEWS POST చేయండి
+
+        </button>
+
+    </div>
+
 </div>
 
 
 <!-- =====================================================
-     FORGOT PASSWORD
+     PROFILE MODAL
 ===================================================== -->
-<div id="forgotScreen" class="screen">
-<div class="auth-wrap">
-<div class="card auth-card">
 
-    <div class="logo">Reset Password</div>
-    <div class="sub">
-        We'll send a secure reset link to your email.
-    </div>
+<div
+    class="modal-bg"
+    id="profileModal">
 
-    <form id="forgotForm">
+    <div class="modal">
 
-        <input
-            id="forgotEmail"
-            type="email"
-            placeholder="Manager email"
-            required
-        >
+        <button
+            class="close"
+            id="closeProfile"
+            type="button">
 
-        <button class="btn full" type="submit">
-            Send Reset Link
+            ×
+
         </button>
 
-    </form>
 
-    <button
-        id="backToLoginBtn"
-        class="btn secondary full"
-        style="margin-top:10px"
-        type="button">
-        ← Back to Login
-    </button>
+        <div class="profile-card">
 
-    <div id="forgotMessage" class="message"></div>
+            <div class="guest-avatar">
+                👤
+            </div>
 
-</div>
-</div>
+
+            <div class="guest-name">
+                Guest User
+            </div>
+
+
+            <div class="guest-text">
+                Login అవసరం లేదు
+            </div>
+
+
+            <div class="profile-row">
+
+                <strong>
+                    📍 District
+                </strong>
+
+                <br>
+
+                <span>
+                    All Districts
+                </span>
+
+            </div>
+
+
+            <div class="profile-row">
+
+                <strong>
+                    📰 Account
+                </strong>
+
+                <br>
+
+                <span>
+                    Guest Mode
+                </span>
+
+            </div>
+
+
+            <div class="profile-row">
+
+                <strong>
+                    🔔 Notifications
+                </strong>
+
+                <br>
+
+                <span id="notificationState">
+                    Checking...
+                </span>
+
+            </div>
+
+
+            <button
+                class="notify-btn"
+                id="enableNotifications"
+                type="button">
+
+                🔔 Notifications Allow చేయండి
+
+            </button>
+
+
+            <button
+                class="notification-open-btn"
+                id="openNotificationList"
+                type="button">
+
+                🔔 Notifications చూడండి
+
+            </button>
+
+        </div>
+
+    </div>
+
 </div>
 
 
 <!-- =====================================================
-     RESET PASSWORD
+     NOTIFICATION MODAL
 ===================================================== -->
-<div id="resetScreen" class="screen">
-<div class="auth-wrap">
-<div class="card auth-card">
 
-    <div class="logo">🔐 New Password</div>
-    <div class="sub">
-        Create a new manager password.
-    </div>
+<div
+    class="modal-bg"
+    id="notificationModal">
 
-    <form id="resetForm">
-
-        <input
-            id="newPassword"
-            type="password"
-            minlength="6"
-            placeholder="New password"
-            required
-        >
-
-        <input
-            id="confirmPassword"
-            type="password"
-            minlength="6"
-            placeholder="Confirm new password"
-            required
-        >
-
-        <button class="btn full" type="submit">
-            Update Password
-        </button>
-
-    </form>
-
-    <div id="resetMessage" class="message"></div>
-
-</div>
-</div>
-</div>
-
-
-<!-- =====================================================
-     DASHBOARD
-===================================================== -->
-<div id="dashboardScreen" class="screen">
-<div class="container">
-
-    <div class="header">
-        <h1>ONE MINUTE NEWS</h1>
+    <div class="modal">
 
         <button
-            id="logoutBtn"
-            class="btn red">
-            Logout
-        </button>
-    </div>
+            class="close"
+            id="closeNotifications"
+            type="button">
 
-    <div class="grid">
+            ×
 
-        <div class="stat">
-            <b id="statNews">0</b>
-            <span>News</span>
-        </div>
-
-        <div class="stat">
-            <b id="statVideos">0</b>
-            <span>Videos</span>
-        </div>
-
-        <div class="stat">
-            <b id="statTrending">0</b>
-            <span>Trending</span>
-        </div>
-
-        <div class="stat">
-            <b id="statPublished">0</b>
-            <span>Published</span>
-        </div>
-
-    </div>
-
-    <div class="tabs">
-
-        <button
-            class="tab active"
-            data-tab="newsPanel">
-            News
         </button>
 
-        <button
-            class="tab"
-            data-tab="videoPanel">
-            Videos
-        </button>
 
-        <button
-            class="tab"
-            data-tab="trendingPanel">
-            Trending
-        </button>
-
-    </div>
+        <h3>
+            🔔 Notifications
+        </h3>
 
 
-    <!-- =================================================
-         NEWS
-    ================================================== -->
-    <section id="newsPanel" class="panel active">
+        <div
+            class="notification-list"
+            id="notificationList">
 
-        <div class="card">
-
-            <div class="section-title">
-                📰 News Manager
+            <div class="notification-item">
+                ఇంకా కొత్త NEWS notifications లేవు.
             </div>
 
-            <form id="newsForm">
-
-                <input type="hidden" id="newsId">
-
-                <div class="form-grid">
-
-                    <div>
-                        <label>Category</label>
-                        <select id="newsCategory">
-                            <option>Latest</option>
-                            <option>India</option>
-                            <option>World</option>
-                            <option>Telangana</option>
-                            <option>Andhra Pradesh</option>
-                            <option>Politics</option>
-                            <option>Business</option>
-                            <option>Sports</option>
-                            <option>Technology</option>
-                            <option>Entertainment</option>
-                            <option>Education</option>
-                            <option>Jobs</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label>Tag</label>
-                        <input
-                            id="newsTag"
-                            placeholder="BREAKING / EXCLUSIVE"
-                        >
-                    </div>
-
-                    <div class="full-row">
-                        <label>Headline</label>
-                        <input
-                            id="newsTitle"
-                            placeholder="News headline"
-                            required
-                        >
-                    </div>
-
-                    <div class="full-row">
-                        <label>News Script / Description</label>
-                        <textarea
-                            id="newsDescription"
-                            placeholder="Complete news script..."
-                            required></textarea>
-                    </div>
-
-                    <div>
-                        <label>Source</label>
-                        <input
-                            id="newsSource"
-                            placeholder="Source name"
-                        >
-                    </div>
-
-                    <div>
-                        <label>HD Image</label>
-                        <input
-                            id="newsImage"
-                            type="file"
-                            accept="image/*"
-                        >
-                        <div class="file-note">
-                            JPG / PNG / WEBP
-                        </div>
-                    </div>
-
-                </div>
-
-                <div id="newsImagePreview"></div>
-
-                <div class="actions">
-
-                    <button
-                        class="btn secondary"
-                        type="submit"
-                        name="status"
-                        value="draft">
-                        Save Draft
-                    </button>
-
-                    <button
-                        class="btn orange"
-                        type="submit"
-                        name="status"
-                        value="demo_approved">
-                        Demo Approval
-                    </button>
-
-                    <button
-                        class="btn green"
-                        type="submit"
-                        name="status"
-                        value="final_approved">
-                        Final Approval
-                    </button>
-
-                    <button
-                        id="newsCancelEdit"
-                        class="small-btn hide"
-                        type="button">
-                        Cancel Edit
-                    </button>
-
-                </div>
-
-                <div id="newsMessage" class="message"></div>
-
-            </form>
-
         </div>
 
-        <div style="height:15px"></div>
-
-        <div class="section-title">
-            Existing News
-        </div>
-
-        <div id="newsList"></div>
-
-    </section>
-
-
-    <!-- =================================================
-         VIDEOS
-    ================================================== -->
-    <section id="videoPanel" class="panel">
-
-        <div class="card">
-
-            <div class="section-title">
-                🎬 Video Manager
-            </div>
-
-            <form id="videoForm">
-
-                <input type="hidden" id="videoId">
-
-                <div class="form-grid">
-
-                    <div>
-                        <label>Tag</label>
-                        <input
-                            id="videoTag"
-                            placeholder="TRENDING"
-                        >
-                    </div>
-
-                    <div>
-                        <label>Thumbnail</label>
-                        <input
-                            id="videoThumbnail"
-                            type="file"
-                            accept="image/*"
-                        >
-                    </div>
-
-                    <div class="full-row">
-                        <label>Title</label>
-                        <input
-                            id="videoTitle"
-                            placeholder="Video title"
-                            required
-                        >
-                    </div>
-
-                    <div class="full-row">
-                        <label>Description</label>
-                        <textarea
-                            id="videoDescription"
-                            placeholder="Video description"></textarea>
-                    </div>
-
-                    <div class="full-row">
-                        <label>Video</label>
-                        <input
-                            id="videoFile"
-                            type="file"
-                            accept="video/*"
-                        >
-                        <div class="file-note">
-                            MP4 / WEBM recommended
-                        </div>
-                    </div>
-
-                </div>
-
-                <div id="videoPreview"></div>
-
-                <div class="actions">
-
-                    <button
-                        class="btn secondary"
-                        type="submit"
-                        name="status"
-                        value="draft">
-                        Save Draft
-                    </button>
-
-                    <button
-                        class="btn orange"
-                        type="submit"
-                        name="status"
-                        value="demo_approved">
-                        Demo
-                    </button>
-
-                    <button
-                        class="btn green"
-                        type="submit"
-                        name="status"
-                        value="final_approved">
-                        Publish
-                    </button>
-
-                    <button
-                        id="videoCancelEdit"
-                        class="small-btn hide"
-                        type="button">
-                        Cancel Edit
-                    </button>
-
-                </div>
-
-                <div id="videoMessage" class="message"></div>
-
-            </form>
-
-        </div>
-
-        <div style="height:15px"></div>
-
-        <div class="section-title">
-            Existing Videos
-        </div>
-
-        <div id="videoList"></div>
-
-    </section>
-
-
-    <!-- =================================================
-         TRENDING
-    ================================================== -->
-    <section id="trendingPanel" class="panel">
-
-        <div class="card">
-
-            <div class="section-title">
-                🔥 Trending Manager
-            </div>
-
-            <form id="trendingForm">
-
-                <input type="hidden" id="trendingId">
-
-                <input
-                    id="trendingTitle"
-                    placeholder="Trending title"
-                    required
-                >
-
-                <div class="form-grid">
-
-                    <div>
-                        <input
-                            id="trendingTime"
-                            placeholder="2 min ago"
-                        >
-                    </div>
-
-                    <div>
-                        <input
-                            id="trendingRank"
-                            type="number"
-                            placeholder="Rank"
-                            value="1"
-                        >
-                    </div>
-
-                </div>
-
-                <label>
-                    <input
-                        id="trendingPublished"
-                        type="checkbox"
-                        checked
-                        style="width:auto">
-                    Published
-                </label>
-
-                <div class="actions">
-
-                    <button
-                        class="btn green"
-                        type="submit">
-                        Save Trending
-                    </button>
-
-                    <button
-                        id="trendingCancelEdit"
-                        class="small-btn hide"
-                        type="button">
-                        Cancel Edit
-                    </button>
-
-                </div>
-
-                <div id="trendingMessage" class="message"></div>
-
-            </form>
-
-        </div>
-
-        <div style="height:15px"></div>
-
-        <div class="section-title">
-            Existing Trending
-        </div>
-
-        <div id="trendingList"></div>
-
-    </section>
+    </div>
 
 </div>
+
+
+<!-- TOAST -->
+
+<div
+    class="toast"
+    id="toast">
 </div>
 
 
 <script>
-/* =========================================================
+
+/* =====================================================
    SUPABASE
-========================================================= */
+===================================================== */
 
 const SUPABASE_URL =
-    "https://eaowxilhfzyukzetgqxo.supabase.co";
+"https://eaowxilhfzyukzetgqxo.supabase.co";
 
 const SUPABASE_KEY =
-    "sb_publishable_Z3xsADypaOjX8GEQEOLUdg_vbxynHRx";
+"sb_publishable_Z3xsADypaOjX8GEQEOLUdg_vbxynHRx";
 
 const db =
-    supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY,
-        {
-            auth:{
-                persistSession:true,
-                autoRefreshToken:true,
-                detectSessionInUrl:true,
-                flowType:"pkce"
-            }
-        }
-    );
+window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
 
 
-/* =========================================================
-   AUTH
-========================================================= */
+/* =====================================================
+   ELEMENTS
+===================================================== */
 
-const ALLOWED_EMAIL =
-    "rammaheshbabu123@gmail.com";
+const uploadModal =
+document.getElementById("uploadModal");
 
+const profileModal =
+document.getElementById("profileModal");
 
-const $ = id =>
-    document.getElementById(id);
+const notificationModal =
+document.getElementById("notificationModal");
 
+const newsFeed =
+document.getElementById("newsFeed");
 
-function showOnly(id){
+const uploadStatus =
+document.getElementById("uploadStatus");
 
-    document
-        .querySelectorAll(".screen")
-        .forEach(x => {
-            x.style.display = "none";
-        });
+const postNewsBtn =
+document.getElementById("postNewsBtn");
 
-    const el = $(id);
 
-    if(el)
-        el.style.display = "block";
-}
-
-
-function redirectUrl(){
-
-    return (
-        window.location.origin +
-        window.location.pathname
-    );
-}
-
-
-/* =========================================================
-   ADMIN CHECK
-========================================================= */
-
-async function verifyManager(){
-
-    const {
-        data:{user},
-        error
-    } =
-    await db.auth.getUser();
-
-    if(error || !user)
-        return false;
-
-    if(
-        !user.email ||
-        user.email.toLowerCase() !==
-        ALLOWED_EMAIL.toLowerCase()
-    ){
-
-        await db.auth.signOut();
-
-        alert("Access denied.");
-
-        showOnly("loginScreen");
-
-        return false;
-    }
-
-    const {
-        data:admin,
-        error:adminError
-    } =
-    await db
-        .from("admins")
-        .select("id,email,role")
-        .eq("id",user.id)
-        .maybeSingle();
-
-    if(adminError){
-
-        console.error(adminError);
-
-        /*
-          If admins RLS is blocking SELECT,
-          email verification still protects this
-          frontend, but production RLS should also
-          protect INSERT/UPDATE/DELETE.
-        */
-
-        return true;
-    }
-
-    if(!admin){
-
-        await db.auth.signOut();
-
-        alert("Manager account is not authorized.");
-
-        showOnly("loginScreen");
-
-        return false;
-    }
-
-    return true;
-}
-
-
-/* =========================================================
-   LOGIN
-========================================================= */
-
-$("loginForm").addEventListener(
-"submit",
-async e => {
-
-    e.preventDefault();
-
-    const email =
-        $("loginEmail").value.trim();
-
-    const password =
-        $("loginPassword").value;
-
-    $("loginMessage").textContent =
-        "Signing in...";
-
-    if(
-        email.toLowerCase() !==
-        ALLOWED_EMAIL.toLowerCase()
-    ){
-
-        $("loginMessage").textContent =
-            "This account is not authorized.";
-
-        return;
-    }
-
-    const {
-        data,
-        error
-    } =
-    await db.auth.signInWithPassword({
-        email,
-        password
-    });
-
-    if(error){
-
-        $("loginMessage").textContent =
-            error.message;
-
-        return;
-    }
-
-    const ok =
-        await verifyManager();
-
-    if(!ok)
-        return;
-
-    $("loginMessage").textContent = "";
-
-    showOnly("dashboardScreen");
-
-    await loadAll();
-});
-
-
-/* =========================================================
-   FORGOT PASSWORD
-========================================================= */
-
-$("forgotPasswordBtn").onclick = () => {
-
-    const email =
-        $("loginEmail").value.trim();
-
-    $("forgotEmail").value =
-        email || ALLOWED_EMAIL;
-
-    $("forgotMessage").textContent = "";
-
-    showOnly("forgotScreen");
-};
-
-
-$("backToLoginBtn").onclick = () => {
-
-    $("forgotMessage").textContent = "";
-
-    showOnly("loginScreen");
-};
-
-
-$("forgotForm").addEventListener(
-"submit",
-async e => {
-
-    e.preventDefault();
-
-    const email =
-        $("forgotEmail").value.trim();
-
-    const message =
-        $("forgotMessage");
-
-    message.textContent =
-        "Sending reset link...";
-
-    if(
-        email.toLowerCase() !==
-        ALLOWED_EMAIL.toLowerCase()
-    ){
-
-        message.textContent =
-            "This email is not authorized.";
-
-        return;
-    }
-
-    const {
-        error
-    } =
-    await db.auth.resetPasswordForEmail(
-        email,
-        {
-            redirectTo:redirectUrl()
-        }
-    );
-
-    if(error){
-
-        console.error(error);
-
-        message.textContent =
-            "Error sending recovery email: " +
-            error.message;
-
-        return;
-    }
-
-    message.innerHTML =
-        "✅ Reset link sent.<br><br>" +
-        "Check your email and open the reset link.";
-
-});
-
-
-/* =========================================================
-   RESET PASSWORD
-========================================================= */
-
-$("resetForm").addEventListener(
-"submit",
-async e => {
-
-    e.preventDefault();
-
-    const p =
-        $("newPassword").value;
-
-    const cp =
-        $("confirmPassword").value;
-
-    const msg =
-        $("resetMessage");
-
-    if(p.length < 6){
-
-        msg.textContent =
-            "Password must be at least 6 characters.";
-
-        return;
-    }
-
-    if(p !== cp){
-
-        msg.textContent =
-            "Passwords do not match.";
-
-        return;
-    }
-
-    msg.textContent =
-        "Updating password...";
-
-    const {
-        error
-    } =
-    await db.auth.updateUser({
-        password:p
-    });
-
-    if(error){
-
-        msg.textContent =
-            error.message;
-
-        return;
-    }
-
-    msg.textContent =
-        "✅ Password updated successfully.";
-
-    $("newPassword").value = "";
-    $("confirmPassword").value = "";
-
-    setTimeout(
-    async () => {
-
-        await db.auth.signOut();
-
-        showOnly("loginScreen");
-
-    },1800);
-
-});
-
-
-/* =========================================================
-   RECOVERY CODE
-========================================================= */
-
-async function handleRecoveryCode(){
-
-    const url =
-        new URL(window.location.href);
-
-    const code =
-        url.searchParams.get("code");
-
-    if(!code)
-        return false;
-
-    const {
-        data,
-        error
-    } =
-    await db.auth.exchangeCodeForSession(
-        code
-    );
-
-    if(error){
-
-        console.error(error);
-
-        alert(
-            "Reset link is invalid or expired."
-        );
-
-        showOnly("loginScreen");
-
-        return false;
-    }
-
-    if(data.session){
-
-        window.history.replaceState(
-            {},
-            document.title,
-            window.location.pathname
-        );
-
-        showOnly("resetScreen");
-
-        return true;
-    }
-
-    return false;
-}
-
-
-/* =========================================================
-   RECOVERY HASH
-========================================================= */
-
-async function handleRecoveryHash(){
-
-    const hash =
-        window.location.hash;
-
-    if(!hash)
-        return false;
-
-    const params =
-        new URLSearchParams(
-            hash.substring(1)
-        );
-
-    if(
-        params.get("type") !==
-        "recovery"
-    )
-        return false;
-
-    const {
-        data:{session}
-    } =
-    await db.auth.getSession();
-
-    if(session){
-
-        window.history.replaceState(
-            {},
-            document.title,
-            window.location.pathname
-        );
-
-        showOnly("resetScreen");
-
-        return true;
-    }
-
-    return false;
-}
-
-
-/* =========================================================
-   AUTH STATE
-========================================================= */
-
-db.auth.onAuthStateChange(
-async (event,session) => {
-
-    if(
-        event ===
-        "PASSWORD_RECOVERY"
-    ){
-
-        showOnly("resetScreen");
-
-        return;
-    }
-
-    if(
-        event ===
-        "SIGNED_OUT"
-    ){
-
-        showOnly("loginScreen");
-
-        return;
-    }
-
-});
-
-
-/* =========================================================
-   LOGOUT
-========================================================= */
-
-$("logoutBtn").onclick =
-async () => {
-
-    await db.auth.signOut();
-
-    showOnly("loginScreen");
-};
-
-
-/* =========================================================
-   TABS
-========================================================= */
+/* =====================================================
+   OPEN / CLOSE MODALS
+===================================================== */
 
 document
-.querySelectorAll(".tab")
-.forEach(tab => {
+.getElementById("openUpload")
+.addEventListener(
+    "click",
+    function(){
 
-    tab.onclick = () => {
+        uploadModal.classList.add("show");
 
-        document
-        .querySelectorAll(".tab")
-        .forEach(x =>
-            x.classList.remove("active")
-        );
-
-        document
-        .querySelectorAll(".panel")
-        .forEach(x =>
-            x.classList.remove("active")
-        );
-
-        tab.classList.add("active");
-
-        $(tab.dataset.tab)
-            .classList.add("active");
-
-    };
-
-});
+    }
+);
 
 
-/* =========================================================
-   STORAGE
-========================================================= */
+document
+.getElementById("closeUpload")
+.addEventListener(
+    "click",
+    function(){
 
-function publicFileUrl(bucket,path){
+        uploadModal.classList.remove("show");
 
-    return (
-        SUPABASE_URL +
-        "/storage/v1/object/public/" +
-        bucket +
-        "/" +
-        path
-    );
-}
+    }
+);
 
 
-async function uploadFile(
-    bucket,
-    file
-){
+document
+.getElementById("profileBtn")
+.addEventListener(
+    "click",
+    function(){
 
-    if(!file)
-        return null;
+        profileModal.classList.add("show");
 
-    const ext =
-        file.name
-        .split(".")
-        .pop()
-        .toLowerCase();
+        updateNotificationStatus();
 
-    const path =
-        crypto.randomUUID() +
-        "." +
-        ext;
+    }
+);
 
-    const {
-        error
-    } =
-    await db.storage
-        .from(bucket)
-        .upload(
-            path,
-            file,
-            {
-                upsert:false,
-                contentType:file.type,
-                cacheControl:"31536000"
+
+document
+.getElementById("closeProfile")
+.addEventListener(
+    "click",
+    function(){
+
+        profileModal.classList.remove("show");
+
+    }
+);
+
+
+document
+.getElementById("notificationBtn")
+.addEventListener(
+    "click",
+    function(){
+
+        notificationModal.classList.add("show");
+
+        renderNotifications();
+
+    }
+);
+
+
+document
+.getElementById("openNotificationList")
+.addEventListener(
+    "click",
+    function(){
+
+        profileModal.classList.remove("show");
+
+        notificationModal.classList.add("show");
+
+        renderNotifications();
+
+    }
+);
+
+
+document
+.getElementById("closeNotifications")
+.addEventListener(
+    "click",
+    function(){
+
+        notificationModal.classList.remove("show");
+
+    }
+);
+
+
+/* =====================================================
+   CLOSE MODAL WHEN CLICKING OUTSIDE
+===================================================== */
+
+uploadModal.addEventListener(
+    "click",
+    function(event){
+
+        if(event.target === uploadModal){
+
+            uploadModal.classList.remove("show");
+
+        }
+
+    }
+);
+
+
+profileModal.addEventListener(
+    "click",
+    function(event){
+
+        if(event.target === profileModal){
+
+            profileModal.classList.remove("show");
+
+        }
+
+    }
+);
+
+
+notificationModal.addEventListener(
+    "click",
+    function(event){
+
+        if(event.target === notificationModal){
+
+            notificationModal.classList.remove("show");
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   NOTIFICATIONS
+===================================================== */
+
+document
+.getElementById("enableNotifications")
+.addEventListener(
+    "click",
+    async function(){
+
+        if(!("Notification" in window)){
+
+            showToast(
+                "❌ ఈ browser Notifications support చేయదు."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            Notification.permission ===
+            "denied"
+        ){
+
+            showToast(
+                "🔕 Notifications Block అయ్యాయి. Browser Site Settingsలో Notifications → Allow చేయండి."
+            );
+
+            return;
+
+        }
+
+
+        try{
+
+            const permission =
+                await Notification.requestPermission();
+
+
+            updateNotificationStatus();
+
+
+            if(permission === "granted"){
+
+                showToast(
+                    "🔔 Notifications ON అయ్యాయి."
+                );
+
+
+                new Notification(
+                    "ప్రాంతీయ ప్రతిధ్వని NEWS",
+                    {
+                        body:
+                        "కొత్త NEWS notifications ఇప్పుడు వస్తాయి."
+                    }
+                );
+
+            }else{
+
+                showToast(
+                    "🔕 Notifications Allow చేయలేదు."
+                );
+
             }
+
+        }catch(error){
+
+            console.error(error);
+
+            showToast(
+                "❌ Notification permission error."
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   NOTIFICATION STATUS
+===================================================== */
+
+function updateNotificationStatus(){
+
+    const state =
+        document.getElementById(
+            "notificationState"
         );
 
-    if(error)
-        throw error;
 
-    return publicFileUrl(
-        bucket,
-        path
-    );
+    if(!("Notification" in window)){
+
+        state.textContent =
+            "Browser support లేదు";
+
+        return;
+
+    }
+
+
+    if(
+        Notification.permission ===
+        "granted"
+    ){
+
+        state.textContent =
+            "🔔 Notifications ON";
+
+    }
+    else if(
+        Notification.permission ===
+        "denied"
+    ){
+
+        state.textContent =
+            "🔕 Notifications OFF";
+
+    }
+    else{
+
+        state.textContent =
+            "⚠️ Permission అవసరం";
+
+    }
+
 }
 
 
-/* =========================================================
-   NEWS FORM
-========================================================= */
+/* =====================================================
+   UPLOAD NEWS
+===================================================== */
 
-$("newsForm").addEventListener(
-"submit",
-async e => {
+postNewsBtn.addEventListener(
+    "click",
+    uploadNews
+);
 
-    e.preventDefault();
 
-    const status =
-        e.submitter?.value ||
-        "draft";
+async function uploadNews(){
 
-    const id =
-        $("newsId").value.trim();
+    const badge =
+        document
+        .getElementById("newsBadge")
+        .value
+        .trim();
 
-    const message =
-        $("newsMessage");
+
+    const title =
+        document
+        .getElementById("newsTitle")
+        .value
+        .trim();
+
+
+    const location =
+        document
+        .getElementById("newsLocation")
+        .value
+        .trim();
+
+
+    const body =
+        document
+        .getElementById("newsBody")
+        .value
+        .trim();
+
+
+    const file =
+        document
+        .getElementById("newsMediaFile")
+        .files[0];
+
+
+    if(!title){
+
+        uploadStatus.textContent =
+            "❌ NEWS Headline ఇవ్వండి.";
+
+        return;
+
+    }
+
+
+    if(!body){
+
+        uploadStatus.textContent =
+            "❌ NEWS Matter ఇవ్వండి.";
+
+        return;
+
+    }
+
+
+    /* 50 MB maximum */
+
+    if(
+        file &&
+        file.size >
+        50 * 1024 * 1024
+    ){
+
+        uploadStatus.textContent =
+            "❌ File 50MB లోపు ఉండాలి.";
+
+        return;
+
+    }
+
+
+    postNewsBtn.disabled = true;
+
+    postNewsBtn.textContent =
+        "⏳ POSTING...";
+
 
     try{
 
-        message.textContent =
-            "Saving news...";
+        let mediaURL = null;
 
-        let imageUrl = null;
+        let mediaType = null;
 
-        const file =
-            $("newsImage").files[0];
+
+        /* =============================================
+           MEDIA
+        ============================================= */
 
         if(file){
 
-            imageUrl =
-                await uploadFile(
-                    "news-images",
-                    file
+            uploadStatus.textContent =
+                "⏳ Media uploading...";
+
+
+            const extension =
+                file.name
+                .split(".")
+                .pop()
+                .toLowerCase();
+
+
+            const filename =
+                Date.now() +
+                "_" +
+                Math.random()
+                .toString(36)
+                .substring(2,9) +
+                "." +
+                extension;
+
+
+            const path =
+                "news/" +
+                filename;
+
+
+            const uploadResult =
+                await db.storage
+                .from("news-media")
+                .upload(
+                    path,
+                    file,
+                    {
+                        cacheControl:"3600",
+                        upsert:false,
+                        contentType:file.type
+                    }
                 );
+
+
+            if(uploadResult.error){
+
+                throw new Error(
+                    uploadResult.error.message
+                );
+
+            }
+
+
+            const publicResult =
+                db.storage
+                .from("news-media")
+                .getPublicUrl(path);
+
+
+            mediaURL =
+                publicResult.data.publicUrl;
+
+
+            mediaType =
+                file.type.startsWith("video/")
+                ? "video"
+                : "image";
+
         }
 
-        const {
-            data:{user}
-        } =
-        await db.auth.getUser();
 
-        const payload = {
+        /* =============================================
+           DATABASE
+        ============================================= */
 
-            category:
-                $("newsCategory").value,
-
-            tag:
-                $("newsTag").value.trim(),
-
-            title:
-                $("newsTitle").value.trim(),
-
-            description:
-                $("newsDescription").value.trim(),
-
-            source:
-                $("newsSource").value.trim(),
-
-            approval_status:
-                status,
-
-            published:
-                status === "final_approved",
-
-            updated_at:
-                new Date().toISOString(),
-
-            updated_by:
-                user?.id || null
-
-        };
-
-        if(imageUrl)
-            payload.image_url = imageUrl;
+        uploadStatus.textContent =
+            "⏳ NEWS saving...";
 
 
-        if(id){
-
-            const {
-                error
-            } =
+        const result =
             await db
-                .from("news")
-                .update(payload)
-                .eq("id",id);
+            .from("news")
+            .insert({
 
-            if(error)
-                throw error;
+                badge:
+                    badge || null,
 
-        }else{
+                title:
+                    title,
 
-            payload.created_by =
-                user?.id || null;
+                location:
+                    location || null,
 
-            const {
-                error
-            } =
-            await db
-                .from("news")
-                .insert(payload);
+                body:
+                    body,
 
-            if(error)
-                throw error;
+                media_url:
+                    mediaURL,
+
+                media_type:
+                    mediaType,
+
+                created_at:
+                    new Date().toISOString()
+
+            });
+
+
+        if(result.error){
+
+            throw new Error(
+                result.error.message
+            );
+
         }
 
-        message.textContent =
-            "✅ News saved successfully.";
 
-        resetNewsForm();
+        /* =============================================
+           SUCCESS
+        ============================================= */
+
+        clearUploadForm();
+
+
+        uploadModal.classList.remove(
+            "show"
+        );
+
+
+        showToast(
+            "✅ NEWS successfully posted"
+        );
+
+
+        /*
+           IMPORTANT:
+           New NEWS always loads from latest
+           to oldest, so uploaded NEWS appears first.
+        */
 
         await loadNews();
 
-        await loadStats();
 
-    }catch(err){
+    }catch(error){
 
-        console.error(err);
+        console.error(
+            "UPLOAD ERROR:",
+            error
+        );
 
-        message.textContent =
-            "Error: " + err.message;
+
+        uploadStatus.textContent =
+            "❌ " + error.message;
+
+
+        showToast(
+            "❌ NEWS upload failed"
+        );
+
+    }finally{
+
+        postNewsBtn.disabled = false;
+
+        postNewsBtn.textContent =
+            "🚀 NEWS POST చేయండి";
+
     }
 
-});
+}
 
 
-/* =========================================================
-   NEWS LIST
-========================================================= */
+/* =====================================================
+   CLEAR FORM
+===================================================== */
+
+function clearUploadForm(){
+
+    document.getElementById(
+        "newsBadge"
+    ).value = "";
+
+
+    document.getElementById(
+        "newsTitle"
+    ).value = "";
+
+
+    document.getElementById(
+        "newsLocation"
+    ).value = "";
+
+
+    document.getElementById(
+        "newsBody"
+    ).value = "";
+
+
+    document.getElementById(
+        "newsMediaFile"
+    ).value = "";
+
+
+    uploadStatus.textContent = "";
+
+}
+
+
+/* =====================================================
+   LOAD NEWS
+===================================================== */
 
 async function loadNews(){
 
-    const {
-        data,
-        error
-    } =
-    await db
-        .from("news")
-        .select("*")
-        .order(
-            "published_at",
-            {ascending:false}
-        );
+    const cutoff =
+        new Date(
+            Date.now() -
+            24 * 60 * 60 * 1000
+        ).toISOString();
 
-    if(error){
-
-        console.error(error);
-
-        $("newsList").innerHTML =
-            `<div class="item">
-                ${error.message}
-             </div>`;
-
-        return;
-    }
-
-    $("newsList").innerHTML = "";
-
-    if(!data?.length){
-
-        $("newsList").innerHTML =
-            `<div class="item">
-                No news found.
-             </div>`;
-
-        return;
-    }
-
-    data.forEach(n => {
-
-        const item =
-            document.createElement("div");
-
-        item.className = "item";
-
-        item.innerHTML = `
-
-            <div class="item-top">
-
-                <div class="item-title">
-                    ${escapeHtml(n.title || "")}
-                </div>
-
-                <span class="badge">
-                    ${escapeHtml(
-                        n.approval_status ||
-                        (n.published
-                            ?"published"
-                            :"draft")
-                    )}
-                </span>
-
-            </div>
-
-            ${
-                n.image_url
-                ? `<img class="preview"
-                     src="${escapeAttr(n.image_url)}">`
-                : ""
-            }
-
-            <div class="meta">
-                ${escapeHtml(n.category || "")}
-                ·
-                ${escapeHtml(n.tag || "")}
-                ·
-                ${escapeHtml(n.source || "")}
-            </div>
-
-            <div class="meta">
-                Views: ${n.views || 0}
-                · Likes: ${n.likes || 0}
-                · Shares: ${n.shares || 0}
-            </div>
-
-            <div class="actions">
-
-                <button
-                    class="small-btn"
-                    data-edit="${n.id}">
-                    Edit
-                </button>
-
-                <button
-                    class="small-btn green"
-                    data-publish="${n.id}">
-                    Publish
-                </button>
-
-                <button
-                    class="small-btn orange"
-                    data-demo="${n.id}">
-                    Demo
-                </button>
-
-                <button
-                    class="small-btn red"
-                    data-delete="${n.id}">
-                    Delete
-                </button>
-
-            </div>
-        `;
-
-        $("newsList").appendChild(item);
-    });
-
-    $("newsList")
-    .querySelectorAll("[data-edit]")
-    .forEach(btn =>
-        btn.onclick = () =>
-            editNews(btn.dataset.edit)
-    );
-
-    $("newsList")
-    .querySelectorAll("[data-publish]")
-    .forEach(btn =>
-        btn.onclick = () =>
-            changeNewsStatus(
-                btn.dataset.publish,
-                "final_approved"
-            )
-    );
-
-    $("newsList")
-    .querySelectorAll("[data-demo]")
-    .forEach(btn =>
-        btn.onclick = () =>
-            changeNewsStatus(
-                btn.dataset.demo,
-                "demo_approved"
-            )
-    );
-
-    $("newsList")
-    .querySelectorAll("[data-delete]")
-    .forEach(btn =>
-        btn.onclick = () =>
-            deleteNews(btn.dataset.delete)
-    );
-}
-
-
-/* =========================================================
-   EDIT NEWS
-========================================================= */
-
-async function editNews(id){
-
-    const {
-        data,
-        error
-    } =
-    await db
-        .from("news")
-        .select("*")
-        .eq("id",id)
-        .single();
-
-    if(error){
-
-        alert(error.message);
-
-        return;
-    }
-
-    $("newsId").value =
-        data.id;
-
-    $("newsCategory").value =
-        data.category || "Latest";
-
-    $("newsTag").value =
-        data.tag || "";
-
-    $("newsTitle").value =
-        data.title || "";
-
-    $("newsDescription").value =
-        data.description || "";
-
-    $("newsSource").value =
-        data.source || "";
-
-    $("newsCancelEdit")
-        .classList.remove("hide");
-
-    document
-        .querySelector('[data-tab="newsPanel"]')
-        ?.click();
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-}
-
-
-/* =========================================================
-   NEWS STATUS
-========================================================= */
-
-async function changeNewsStatus(
-    id,
-    status
-){
-
-    const {
-        error
-    } =
-    await db
-        .from("news")
-        .update({
-            approval_status:status,
-            published:
-                status === "final_approved",
-            updated_at:
-                new Date().toISOString()
-        })
-        .eq("id",id);
-
-    if(error){
-
-        alert(error.message);
-
-        return;
-    }
-
-    await loadNews();
-    await loadStats();
-}
-
-
-/* =========================================================
-   DELETE NEWS
-========================================================= */
-
-async function deleteNews(id){
-
-    if(!confirm(
-        "Delete this news permanently?"
-    ))
-        return;
-
-    const {
-        error
-    } =
-    await db
-        .from("news")
-        .delete()
-        .eq("id",id);
-
-    if(error){
-
-        alert(error.message);
-
-        return;
-    }
-
-    await loadNews();
-    await loadStats();
-}
-
-
-function resetNewsForm(){
-
-    $("newsForm").reset();
-
-    $("newsId").value = "";
-
-    $("newsCategory").value =
-        "Latest";
-
-    $("newsCancelEdit")
-        .classList.add("hide");
-
-    $("newsImagePreview").innerHTML = "";
-}
-
-
-$("newsCancelEdit").onclick =
-resetNewsForm;
-
-
-/* =========================================================
-   VIDEO FORM
-========================================================= */
-
-$("videoForm").addEventListener(
-"submit",
-async e => {
-
-    e.preventDefault();
-
-    const status =
-        e.submitter?.value ||
-        "draft";
-
-    const id =
-        $("videoId").value.trim();
-
-    const message =
-        $("videoMessage");
-
-    try{
-
-        message.textContent =
-            "Saving video...";
-
-        let videoUrl = null;
-        let thumbnailUrl = null;
-
-        const videoFile =
-            $("videoFile").files[0];
-
-        const thumbnailFile =
-            $("videoThumbnail").files[0];
-
-        if(videoFile){
-
-            videoUrl =
-                await uploadFile(
-                    "news-videos",
-                    videoFile
-                );
-        }
-
-        if(thumbnailFile){
-
-            thumbnailUrl =
-                await uploadFile(
-                    "news-images",
-                    thumbnailFile
-                );
-        }
-
-        const {
-            data:{user}
-        } =
-        await db.auth.getUser();
-
-        const payload = {
-
-            tag:
-                $("videoTag").value.trim(),
-
-            title:
-                $("videoTitle").value.trim(),
-
-            description:
-                $("videoDescription").value.trim(),
-
-            approval_status:
-                status,
-
-            published:
-                status === "final_approved",
-
-            updated_at:
-                new Date().toISOString(),
-
-            updated_by:
-                user?.id || null
-
-        };
-
-        if(videoUrl)
-            payload.video_url =
-                videoUrl;
-
-        if(thumbnailUrl)
-            payload.thumbnail_url =
-                thumbnailUrl;
-
-
-        if(id){
-
-            const {
-                error
-            } =
-            await db
-                .from("videos")
-                .update(payload)
-                .eq("id",id);
-
-            if(error)
-                throw error;
-
-        }else{
-
-            payload.created_by =
-                user?.id || null;
-
-            const {
-                error
-            } =
-            await db
-                .from("videos")
-                .insert(payload);
-
-            if(error)
-                throw error;
-        }
-
-        message.textContent =
-            "✅ Video saved successfully.";
-
-        resetVideoForm();
-
-        await loadVideos();
-        await loadStats();
-
-    }catch(err){
-
-        console.error(err);
-
-        message.textContent =
-            "Error: " + err.message;
-    }
-
-});
-
-
-/* =========================================================
-   VIDEOS LIST
-========================================================= */
-
-async function loadVideos(){
-
-    const {
-        data,
-        error
-    } =
-    await db
-        .from("videos")
-        .select("*")
-        .order(
-            "created_at",
-            {ascending:false}
-        );
-
-    if(error){
-
-        $("videoList").innerHTML =
-            `<div class="item">
-                ${error.message}
-             </div>`;
-
-        return;
-    }
-
-    $("videoList").innerHTML = "";
-
-    if(!data?.length){
-
-        $("videoList").innerHTML =
-            `<div class="item">
-                No videos found.
-             </div>`;
-
-        return;
-    }
-
-    data.forEach(v => {
-
-        const item =
-            document.createElement("div");
-
-        item.className = "item";
-
-        item.innerHTML = `
-
-            <div class="item-top">
-
-                <div class="item-title">
-                    ${escapeHtml(v.title || "")}
-                </div>
-
-                <span class="badge">
-                    ${escapeHtml(
-                        v.approval_status ||
-                        (v.published
-                            ?"published"
-                            :"draft")
-                    )}
-                </span>
-
-            </div>
-
-            ${
-                v.thumbnail_url
-                ? `<img class="preview"
-                     src="${escapeAttr(v.thumbnail_url)}">`
-                : ""
-            }
-
-            <div class="meta">
-                ${escapeHtml(v.tag || "")}
-            </div>
-
-            <div class="actions">
-
-                <button
-                    class="small-btn"
-                    data-edit-video="${v.id}">
-                    Edit
-                </button>
-
-                <button
-                    class="small-btn green"
-                    data-publish-video="${v.id}">
-                    Publish
-                </button>
-
-                <button
-                    class="small-btn orange"
-                    data-demo-video="${v.id}">
-                    Demo
-                </button>
-
-                <button
-                    class="small-btn red"
-                    data-delete-video="${v.id}">
-                    Delete
-                </button>
-
-            </div>
-        `;
-
-        $("videoList").appendChild(item);
-    });
-
-
-    $("videoList")
-    .querySelectorAll("[data-edit-video]")
-    .forEach(btn =>
-        btn.onclick = () =>
-            editVideo(
-                btn.dataset.editVideo
-            )
-    );
-
-
-    $("videoList")
-    .querySelectorAll("[data-publish-video]")
-    .forEach(btn =>
-        btn.onclick = () =>
-            changeVideoStatus(
-                btn.dataset.publishVideo,
-                "final_approved"
-            )
-    );
-
-
-    $("videoList")
-    .querySelectorAll("[data-demo-video]")
-    .forEach(btn =>
-        btn.onclick = () =>
-            changeVideoStatus(
-                btn.dataset.demoVideo,
-                "demo_approved"
-            )
-    );
-
-
-    $("videoList")
-    .querySelectorAll("[data-delete-video]")
-    .forEach(btn =>
-        btn.onclick = () =>
-            deleteVideo(
-                btn.dataset.deleteVideo
-            )
-    );
-}
-
-
-/* =========================================================
-   EDIT VIDEO
-========================================================= */
-
-async function editVideo(id){
-
-    const {
-        data,
-        error
-    } =
-    await db
-        .from("videos")
-        .select("*")
-        .eq("id",id)
-        .single();
-
-    if(error){
-
-        alert(error.message);
-
-        return;
-    }
-
-    $("videoId").value =
-        data.id;
-
-    $("videoTag").value =
-        data.tag || "";
-
-    $("videoTitle").value =
-        data.title || "";
-
-    $("videoDescription").value =
-        data.description || "";
-
-    $("videoCancelEdit")
-        .classList.remove("hide");
-
-    document
-        .querySelector('[data-tab="videoPanel"]')
-        ?.click();
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-}
-
-
-/* =========================================================
-   VIDEO STATUS
-========================================================= */
-
-async function changeVideoStatus(
-    id,
-    status
-){
-
-    const {
-        error
-    } =
-    await db
-        .from("videos")
-        .update({
-            approval_status:status,
-            published:
-                status === "final_approved",
-            updated_at:
-                new Date().toISOString()
-        })
-        .eq("id",id);
-
-    if(error){
-
-        alert(error.message);
-
-        return;
-    }
-
-    await loadVideos();
-    await loadStats();
-}
-
-
-/* =========================================================
-   DELETE VIDEO
-========================================================= */
-
-async function deleteVideo(id){
-
-    if(!confirm(
-        "Delete this video permanently?"
-    ))
-        return;
-
-    const {
-        error
-    } =
-    await db
-        .from("videos")
-        .delete()
-        .eq("id",id);
-
-    if(error){
-
-        alert(error.message);
-
-        return;
-    }
-
-    await loadVideos();
-    await loadStats();
-}
-
-
-function resetVideoForm(){
-
-    $("videoForm").reset();
-
-    $("videoId").value = "";
-
-    $("videoCancelEdit")
-        .classList.add("hide");
-
-    $("videoPreview").innerHTML = "";
-}
-
-
-$("videoCancelEdit").onclick =
-resetVideoForm;
-
-
-/* =========================================================
-   TRENDING FORM
-========================================================= */
-
-$("trendingForm").addEventListener(
-"submit",
-async e => {
-
-    e.preventDefault();
-
-    const id =
-        $("trendingId").value.trim();
-
-    const payload = {
-
-        title:
-            $("trendingTitle").value.trim(),
-
-        time:
-            $("trendingTime").value.trim(),
-
-        rank:
-            Number(
-                $("trendingRank").value || 1
-            ),
-
-        published:
-            $("trendingPublished").checked
-    };
-
-    const message =
-        $("trendingMessage");
-
-    message.textContent =
-        "Saving...";
-
-    let result;
-
-    if(id){
-
-        result =
-            await db
-                .from("trending")
-                .update(payload)
-                .eq("id",id);
-
-    }else{
-
-        result =
-            await db
-                .from("trending")
-                .insert(payload);
-    }
-
-    if(result.error){
-
-        message.textContent =
-            result.error.message;
-
-        return;
-    }
-
-    message.textContent =
-        "✅ Trending saved.";
-
-    resetTrendingForm();
-
-    await loadTrending();
-    await loadStats();
-
-});
-
-
-/* =========================================================
-   TRENDING LIST
-========================================================= */
-
-async function loadTrending(){
-
-    const {
-        data,
-        error
-    } =
-    await db
-        .from("trending")
-        .select("*")
-        .order(
-            "rank",
-            {ascending:true}
-        );
-
-    if(error){
-
-        $("trendingList").innerHTML =
-            `<div class="item">
-                ${error.message}
-             </div>`;
-
-        return;
-    }
-
-    $("trendingList").innerHTML = "";
-
-    if(!data?.length){
-
-        $("trendingList").innerHTML =
-            `<div class="item">
-                No trending items.
-             </div>`;
-
-        return;
-    }
-
-    data.forEach(t => {
-
-        const item =
-            document.createElement("div");
-
-        item.className = "item";
-
-        item.innerHTML = `
-
-            <div class="item-top">
-
-                <div>
-                    <b>#${t.rank || 0}</b>
-                    &nbsp;
-                    ${escapeHtml(t.title || "")}
-                </div>
-
-                <span class="badge">
-                    ${t.published
-                        ?"Published"
-                        :"Hidden"}
-                </span>
-
-            </div>
-
-            <div class="meta">
-                ${escapeHtml(t.time || "")}
-            </div>
-
-            <div class="actions">
-
-                <button
-                    class="small-btn"
-                    data-edit-trending="${t.id}">
-                    Edit
-                </button>
-
-                <button
-                    class="small-btn ${
-                        t.published
-                        ?"orange"
-                        :"green"
-                    }"
-                    data-toggle-trending="${t.id}">
-                    ${t.published
-                        ?"Hide"
-                        :"Publish"}
-                </button>
-
-                <button
-                    class="small-btn red"
-                    data-delete-trending="${t.id}">
-                    Delete
-                </button>
-
-            </div>
-        `;
-
-        $("trendingList")
-            .appendChild(item);
-    });
-
-
-    $("trendingList")
-    .querySelectorAll(
-        "[data-edit-trending]"
-    )
-    .forEach(btn =>
-        btn.onclick = () =>
-            editTrending(
-                btn.dataset.editTrending
-            )
-    );
-
-
-    $("trendingList")
-    .querySelectorAll(
-        "[data-toggle-trending]"
-    )
-    .forEach(btn =>
-        btn.onclick = () =>
-            toggleTrending(
-                btn.dataset.toggleTrending
-            )
-    );
-
-
-    $("trendingList")
-    .querySelectorAll(
-        "[data-delete-trending]"
-    )
-    .forEach(btn =>
-        btn.onclick = () =>
-            deleteTrending(
-                btn.dataset.deleteTrending
-            )
-    );
-}
-
-
-/* =========================================================
-   EDIT TRENDING
-========================================================= */
-
-async function editTrending(id){
-
-    const {
-        data,
-        error
-    } =
-    await db
-        .from("trending")
-        .select("*")
-        .eq("id",id)
-        .single();
-
-    if(error){
-
-        alert(error.message);
-
-        return;
-    }
-
-    $("trendingId").value =
-        data.id;
-
-    $("trendingTitle").value =
-        data.title || "";
-
-    $("trendingTime").value =
-        data.time || "";
-
-    $("trendingRank").value =
-        data.rank || 1;
-
-    $("trendingPublished").checked =
-        !!data.published;
-
-    $("trendingCancelEdit")
-        .classList.remove("hide");
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-}
-
-
-$("trendingCancelEdit").onclick =
-resetTrendingForm;
-
-
-function resetTrendingForm(){
-
-    $("trendingForm").reset();
-
-    $("trendingId").value = "";
-
-    $("trendingRank").value = 1;
-
-    $("trendingPublished").checked =
-        true;
-
-    $("trendingCancelEdit")
-        .classList.add("hide");
-}
-
-
-/* =========================================================
-   TOGGLE TRENDING
-========================================================= */
-
-async function toggleTrending(id){
-
-    const {
-        data,
-        error
-    } =
-    await db
-        .from("trending")
-        .select("published")
-        .eq("id",id)
-        .single();
-
-    if(error){
-
-        alert(error.message);
-
-        return;
-    }
 
     const result =
         await db
-            .from("trending")
-            .update({
-                published:
-                    !data.published
-            })
-            .eq("id",id);
+        .from("news")
+        .select("*")
+        .gte(
+            "created_at",
+            cutoff
+        )
+        .order(
+            "created_at",
+            {
+                ascending:false
+            }
+        );
+
 
     if(result.error){
 
-        alert(result.error.message);
+        console.error(
+            result.error
+        );
+
+
+        newsFeed.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-box">
+
+                    <div style="font-size:45px">
+                        ⚠️
+                    </div>
+
+                    <h3>
+                        NEWS Load Error
+                    </h3>
+
+                    <p>
+                        Supabase table / RLS check చేయండి.
+                    </p>
+
+                </div>
+
+            </div>
+
+        `;
 
         return;
+
     }
 
-    await loadTrending();
-}
-
-
-/* =========================================================
-   DELETE TRENDING
-========================================================= */
-
-async function deleteTrending(id){
-
-    if(!confirm(
-        "Delete this trending item?"
-    ))
-        return;
-
-    const {
-        error
-    } =
-    await db
-        .from("trending")
-        .delete()
-        .eq("id",id);
-
-    if(error){
-
-        alert(error.message);
-
-        return;
-    }
-
-    await loadTrending();
-    await loadStats();
-}
-
-
-/* =========================================================
-   STATS
-========================================================= */
-
-async function loadStats(){
 
     const news =
-        await db
-            .from("news")
-            .select("id,published");
-
-    const videos =
-        await db
-            .from("videos")
-            .select("id");
-
-    const trending =
-        await db
-            .from("trending")
-            .select("id");
-
-    $("statNews").textContent =
-        news.data?.length || 0;
-
-    $("statVideos").textContent =
-        videos.data?.length || 0;
-
-    $("statTrending").textContent =
-        trending.data?.length || 0;
-
-    $("statPublished").textContent =
-        news.data
-        ?.filter(x => x.published)
-        .length || 0;
-}
+        result.data || [];
 
 
-/* =========================================================
-   LOAD ALL
-========================================================= */
+    if(news.length === 0){
 
-async function loadAll(){
+        newsFeed.innerHTML = `
 
-    await Promise.all([
-        loadNews(),
-        loadVideos(),
-        loadTrending(),
-        loadStats()
-    ]);
-}
+            <div class="empty">
 
+                <div class="empty-box">
 
-/* =========================================================
-   HTML ESCAPE
-========================================================= */
+                    <div style="font-size:45px">
+                        📰
+                    </div>
 
-function escapeHtml(value){
+                    <h3>
+                        ప్రస్తుతం NEWS లేదు
+                    </h3>
 
-    return String(value ?? "")
-        .replaceAll("&","&amp;")
-        .replaceAll("<","&lt;")
-        .replaceAll(">","&gt;")
-        .replaceAll('"',"&quot;")
-        .replaceAll("'","&#039;");
-}
+                    <p>
+                        ➕ button నొక్కి NEWS POST చేయండి.
+                    </p>
 
+                </div>
 
-function escapeAttr(value){
+            </div>
 
-    return escapeHtml(value);
-}
-
-
-/* =========================================================
-   IMAGE PREVIEW
-========================================================= */
-
-$("newsImage").addEventListener(
-"change",
-e => {
-
-    const file =
-        e.target.files[0];
-
-    if(!file)
-        return;
-
-    const url =
-        URL.createObjectURL(file);
-
-    $("newsImagePreview").innerHTML =
-        `<img class="preview" src="${url}">`;
-});
-
-
-$("videoThumbnail").addEventListener(
-"change",
-e => {
-
-    const file =
-        e.target.files[0];
-
-    if(!file)
-        return;
-
-    const url =
-        URL.createObjectURL(file);
-
-    $("videoPreview").innerHTML =
-        `<img class="preview" src="${url}">`;
-});
-
-
-/* =========================================================
-   INITIAL START
-========================================================= */
-
-(async function(){
-
-    /*
-      1. Supabase PKCE recovery:
-         ?code=xxxx
-    */
-
-    if(
-        await handleRecoveryCode()
-    )
-        return;
-
-
-    /*
-      2. Recovery hash:
-         #type=recovery
-    */
-
-    if(
-        await handleRecoveryHash()
-    )
-        return;
-
-
-    /*
-      3. Normal session
-    */
-
-    const {
-        data:{session}
-    } =
-    await db.auth.getSession();
-
-
-    if(!session){
-
-        showOnly("loginScreen");
+        `;
 
         return;
+
     }
 
 
     /*
-      4. Verify manager
+       Latest NEWS = first card
     */
 
-    const ok =
-        await verifyManager();
+    newsFeed.innerHTML = "";
 
-    if(!ok){
 
-        showOnly("loginScreen");
+    news.forEach(
+        function(item){
 
-        return;
+            newsFeed.appendChild(
+                createCard(item)
+            );
+
+        }
+    );
+
+}
+
+
+/* =====================================================
+   CREATE NEWS CARD
+===================================================== */
+
+function createCard(news){
+
+    const card =
+        document.createElement(
+            "article"
+        );
+
+
+    card.className =
+        "news-card";
+
+
+    let media = `
+
+        <div style="
+            font-size:55px;
+            color:#0b3c5d;
+        ">
+            📰
+        </div>
+
+    `;
+
+
+    if(news.media_url){
+
+        if(
+            news.media_type ===
+            "video"
+        ){
+
+            media = `
+
+                <video
+                    src="${escapeValue(news.media_url)}"
+                    controls
+                    playsinline
+                    preload="metadata">
+                </video>
+
+            `;
+
+        }else{
+
+            media = `
+
+                <img
+                    src="${escapeValue(news.media_url)}"
+                    alt="NEWS"
+                    loading="eager">
+
+            `;
+
+        }
+
     }
 
 
-    /*
-      5. Dashboard
-    */
+    const liked =
+        localStorage.getItem(
+            "liked_" + news.id
+        ) === "1";
 
-    showOnly("dashboardScreen");
 
-    await loadAll();
+    const count =
+        parseInt(
+            localStorage.getItem(
+                "count_" + news.id
+            ) || "0",
+            10
+        );
 
-})();
+
+    card.innerHTML = `
+
+        <div class="news-media">
+
+            ${
+                news.badge
+                ?
+                `
+                <div class="badge">
+                    ${escapeText(news.badge)}
+                </div>
+                `
+                :
+                ""
+            }
+
+
+            ${media}
+
+
+            <div class="watermark">
+                ప్రాంతీయ ప్రతిధ్వని NEWS
+            </div>
+
+        </div>
+
+
+        <div class="news-body">
+
+            <h2 class="news-title">
+                ${escapeText(news.title)}
+            </h2>
+
+
+            <div class="news-meta">
+
+                <span>
+                    📍
+                    ${escapeText(
+                        news.location ||
+                        "India"
+                    )}
+                </span>
+
+
+                <span>
+                    ${formatDate(
+                        news.created_at
+                    )}
+                </span>
+
+            </div>
+
+
+            <p class="news-text">
+                ${escapeText(
+                    news.body || ""
+                )}
+            </p>
+
+        </div>
+
+
+        <div class="footer">
+
+            <button
+                type="button"
+                class="action like ${
+                    liked ? "active" : ""
+                }">
+
+                ${
+                    liked
+                    ? "❤️"
+                    : "🤍"
+                }
+
+                లైక్
+                (<span>${count}</span>)
+
+            </button>
+
+
+            <button
+                type="button"
+                class="action share">
+
+                💚 షేర్
+
+            </button>
+
+        </div>
+
+    `;
+
+
+    card
+    .querySelector(".like")
+    .addEventListener(
+        "click",
+        function(){
+
+            toggleLike(
+                this,
+                news.id
+            );
+
+        }
+    );
+
+
+    card
+    .querySelector(".share")
+    .addEventListener(
+        "click",
+        function(){
+
+            shareNews(
+                news.title,
+                news.body || ""
+            );
+
+        }
+    );
+
+
+    return card;
+
+}
+
+
+/* =====================================================
+   LIKE
+===================================================== */
+
+function toggleLike(
+    button,
+    id
+){
+
+    const key =
+        "liked_" + id;
+
+    const countKey =
+        "count_" + id;
+
+
+    let liked =
+        localStorage.getItem(key)
+        === "1";
+
+
+    let count =
+        parseInt(
+            localStorage.getItem(
+                countKey
+            ) || "0",
+            10
+        );
+
+
+    if(liked){
+
+        liked = false;
+
+        count =
+            Math.max(
+                0,
+                count - 1
+            );
+
+        localStorage.removeItem(
+            key
+        );
+
+    }else{
+
+        liked = true;
+
+        count++;
+
+        localStorage.setItem(
+            key,
+            "1"
+        );
+
+    }
+
+
+    localStorage.setItem(
+        countKey,
+        count
+    );
+
+
+    button.classList.toggle(
+        "active",
+        liked
+    );
+
+
+    button.innerHTML =
+        `${liked ? "❤️" : "🤍"}
+         లైక్
+         (<span>${count}</span>)`;
+
+}
+
+
+/* =====================================================
+   SHARE
+===================================================== */
+
+async function shareNews(
+    title,
+    body
+){
+
+    const text =
+`${title}
+
+${body}
+
+ప్రాంతీయ ప్రతిధ్వని NEWS`;
+
+
+    if(navigator.share){
+
+        try{
+
+            await navigator.share({
+
+                title:title,
+
+                text:text
+
+            });
+
+            return;
+
+        }catch(error){
+
+            if(
+                error.name ===
+                "AbortError"
+            ){
+
+                return;
+
+            }
+
+        }
+
+    }
+
+
+    window.open(
+        "https://wa.me/?text=" +
+        encodeURIComponent(text),
+        "_blank"
+    );
+
+}
+
+
+/* =====================================================
+   REALTIME
+===================================================== */
+
+db.channel(
+    "news-live"
+)
+.on(
+    "postgres_changes",
+    {
+        event:"INSERT",
+        schema:"public",
+        table:"news"
+    },
+    function(payload){
+
+        /*
+           New NEWS automatically becomes
+           first/latest NEWS.
+        */
+
+        loadNews();
+
+
+        const news =
+            payload.new;
+
+
+        addNotification(
+            news
+        );
+
+
+        /*
+           Browser notification only when
+           permission is granted.
+        */
+
+        if(
+            "Notification" in window &&
+            Notification.permission ===
+            "granted"
+        ){
+
+            try{
+
+                new Notification(
+                    "📰 కొత్త NEWS",
+                    {
+                        body:
+                            news.title ||
+                            "కొత్త NEWS వచ్చింది."
+                    }
+                );
+
+            }catch(error){
+
+                console.log(
+                    error
+                );
+
+            }
+
+        }
+
+    }
+)
+.subscribe();
+
+
+/* =====================================================
+   LOCAL NOTIFICATIONS
+===================================================== */
+
+function addNotification(news){
+
+    const list =
+        JSON.parse(
+            localStorage.getItem(
+                "news_notifications"
+            ) || "[]"
+        );
+
+
+    list.unshift({
+
+        title:
+            news.title,
+
+        location:
+            news.location,
+
+        time:
+            new Date().toISOString()
+
+    });
+
+
+    localStorage.setItem(
+        "news_notifications",
+        JSON.stringify(
+            list.slice(0,30)
+        )
+    );
+
+
+    renderNotifications();
+
+}
+
+
+/* =====================================================
+   RENDER NOTIFICATIONS
+===================================================== */
+
+function renderNotifications(){
+
+    const container =
+        document.getElementById(
+            "notificationList"
+        );
+
+
+    const list =
+        JSON.parse(
+            localStorage.getItem(
+                "news_notifications"
+            ) || "[]"
+        );
+
+
+    if(list.length === 0){
+
+        container.innerHTML = `
+
+            <div class="notification-item">
+
+                ఇంకా కొత్త NEWS notifications లేవు.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML =
+        list
+        .map(
+            function(item){
+
+                return `
+
+                    <div class="notification-item">
+
+                        <strong>
+                            📰
+                            ${escapeText(
+                                item.title
+                            )}
+                        </strong>
+
+
+                        <small>
+                            📍
+                            ${escapeText(
+                                item.location ||
+                                "India"
+                            )}
+                        </small>
+
+
+                        <small>
+                            ${formatDate(
+                                item.time
+                            )}
+                        </small>
+
+                    </div>
+
+                `;
+
+            }
+        )
+        .join("");
+
+}
+
+
+/* =====================================================
+   DATE
+===================================================== */
+
+function formatDate(date){
+
+    return new Date(date)
+    .toLocaleString(
+        "te-IN",
+        {
+            day:"2-digit",
+            month:"short",
+            year:"numeric",
+            hour:"2-digit",
+            minute:"2-digit"
+        }
+    );
+
+}
+
+
+/* =====================================================
+   ESCAPE
+===================================================== */
+
+function escapeText(value){
+
+    return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+function escapeValue(value){
+
+    return escapeText(value);
+
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+function showToast(message){
+
+    const toast =
+        document.getElementById(
+            "toast"
+        );
+
+
+    toast.textContent =
+        message;
+
+
+    toast.style.display =
+        "block";
+
+
+    setTimeout(
+        function(){
+
+            toast.style.display =
+                "none";
+
+        },
+        3000
+    );
+
+}
+
+
+/* =====================================================
+   AUTO REFRESH
+===================================================== */
+
+setInterval(
+    loadNews,
+    60000
+);
+
+
+/* =====================================================
+   START
+===================================================== */
+
+loadNews();
+
+updateNotificationStatus();
+
+renderNotifications();
+
 </script>
 
 </body>
